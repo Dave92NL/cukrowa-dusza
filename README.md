@@ -188,6 +188,16 @@ czytelnosci - stad przyciemnienie w jasnym motywie i rozjasnienie w ciemnym.
 Czerwien ostrzezen i zielen marzy zostaja poza paleta marki: kolor, ktory mowi
 "sprawdz cene", musi odcinac sie od brandingu, a nie z nim zlewac.
 
+## VAT: zawsze brutto
+
+Nie jesteś płatnikiem VAT i pieczesz hobbystycznie, więc nie odliczasz podatku
+naliczonego — Twoim realnym kosztem jest kwota płacona przy kasie. Dlatego
+**cała aplikacja liczy w cenach brutto**, spójnie dla obu sklepów.
+
+`prices.json` niesie czasem `netPrice` i `vatRate` z Baktotaal (tam, gdzie dało
+się je ustalić pewnie), ale aplikacja ich nie używa. Zostają jako ślad w danych,
+na wypadek gdyby sytuacja się kiedyś zmieniła.
+
 ## Prywatność
 
 GitHub Pages na darmowym koncie wymaga publicznego repo, więc:

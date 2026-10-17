@@ -1,6 +1,11 @@
 // Serce aplikacji: czyste funkcje, zero DOM, zero zależności.
 // Wszystkie kwoty w groszach. Stawki jednostkowe mogą być ułamkowe
 // (grosze za 1 g to rzadko liczba całkowita) — zaokrąglamy dopiero na wyjściu.
+//
+// WSZYSTKIE CENY SĄ BRUTTO i tak ma zostać. Dawid nie jest płatnikiem VAT,
+// więc nie odlicza podatku naliczonego — jego realnym kosztem jest ta kwota,
+// którą płaci przy kasie. prices.json niesie czasem pole netPrice z Baktotaal,
+// ale aplikacja go NIE używa; zostaje wyłącznie jako ślad w danych.
 
 export const UNITS = ['g', 'ml', 'szt'];
 
@@ -51,11 +56,22 @@ export function resolveProduct(key, catalog, prices) {
   const src = sourceOf(cat);
   const base = { key, name: cat.name, pack: cat.pack, unit: cat.unit, source: src };
 
+  const p = (prices && prices.products && prices.products[key]) || null;
+
+  // Kolejnosc pierwszenstwa, jedna dla calej aplikacji:
+  //   1. cena nadpisana recznie w aplikacji  (najswiezsza decyzja uzytkownika)
+  //   2. cena z katalogu dla wpisu 'manual'  (produkt spoza obu sklepow)
+  //   3. cena z synchronizacji
+  // Wczesniej ekran Skladnikow i Kalkulator rozstrzygaly to inaczej, wiec
+  // potrafily pokazac dwie rozne kwoty dla tego samego produktu.
+  if (p && p.overridden) {
+    return { ...base, price: p.price ?? null, bonusPrice: null, bonusUntil: null,
+             overridden: true, ok: p.price != null, synced: true };
+  }
   if (src === 'manual') {
     return { ...base, price: cat.price ?? null, bonusPrice: null, bonusUntil: null,
              ok: cat.price != null, synced: true };
   }
-  const p = prices && prices.products && prices.products[key];
   if (!p) return { ...base, price: null, bonusPrice: null, ok: false, source: 'missing' };
 
   return { ...base,

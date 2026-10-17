@@ -40,6 +40,7 @@
 
 <script type="module">
 import { fmt, fmtPlain, parseMoney, parseAmount } from './js/money.js';
+import { ingredientList } from './js/prices.js';
 import { cakeCost, unitPrice, lineCost, bonusActive, resolveProduct, sourceOf,
          diameterFactor, scaleRecipe, pricesAgeDays } from './js/calc.js';
 
@@ -53,7 +54,13 @@ function grp(name){ group = document.createElement('div');
 
 function t(name, fn){
   let okFlag = true, detail = '';
-  try { fn(); } catch(e){ okFlag = false; detail = e.message; }
+  try {
+    const r = fn();
+    // Test asynchroniczny przeszedlby tu zawsze, bo odrzucona obietnica nie
+    // trafi do catch. Lepiej go odrzucic glosno niz zafarbowac na zielono.
+    if (r && typeof r.then === 'function')
+      throw new Error('test asynchroniczny - harness obsluguje tylko synchroniczne');
+  } catch(e){ okFlag = false; detail = e.message; }
   okFlag ? pass++ : fail++;
   const row = document.createElement('div'); row.className = 't';
   row.innerHTML = `<span class="m ${okFlag?'p':'f'}">${okFlag?'OK':'BŁĄD'}</span>
@@ -176,6 +183,25 @@ t('wszystkie 10 pozycji policzonych, nic nie brakuje', () => {
 t('produkt ręczny (barwnik) bierze cenę z katalogu: 10,95 gr/g', () => {
   const l = zB.lines.find(x => x.key === 'barwnik');
   eq(l.source, 'manual'); near(l.unitPrice, 10.95); near(l.cost, 87.6);
+});
+t('ręczne nadpisanie bije cenę z synchronizacji', () => {
+  const c = { x: { name:'X', source:'ah', pack:100, unit:'g' } };
+  const p = { products: { x: { price:500, ok:true, syncedAt:'2026-10-16T05:15:00Z',
+                               overridden:true } } };
+  const r = resolveProduct('x', c, p);
+  eq(r.price, 500); eq(r.overridden, true); eq(r.synced, true);
+});
+t('wpis manual bierze cenę z katalogu, a nie resztkę z prices.json', () => {
+  const c = { x: { name:'X', source:'manual', pack:100, unit:'g', price:219 } };
+  const p = { products: { x: { price:999, ok:true } } };   // stara resztka po AH
+  eq(resolveProduct('x', c, p).price, 219);
+});
+t('ekran Składników i kalkulator pokazują tę samą cenę', () => {
+  const c = { x: { name:'X', source:'manual', pack:100, unit:'g', price:219 } };
+  const p = { products: { x: { price:999, ok:true } } };
+  const zListy = ingredientList(c, p)[0].price;
+  const zKalkulatora = resolveProduct('x', c, p).price;
+  eq(zListy, zKalkulatora);
 });
 t('produkt z Baktotaal liczy się na sztuki: podkład 1 szt = 1,79 €', () => {
   const r = cakeCost({ ...RECIPE, lines:[{ key:'podklad', amount:1 }] },

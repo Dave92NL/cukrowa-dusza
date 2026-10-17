@@ -2,7 +2,7 @@
 // wiec nie ma problemu CORS, ktory blokuje wolanie api.ah.nl wprost.
 
 import { getOverrides } from './store.js';
-import { sourceOf } from './calc.js';
+import { sourceOf, resolveProduct } from './calc.js';
 
 const CATALOG_URL = './data/catalog.json';
 const PRICES_URL = './data/prices.json';
@@ -43,30 +43,32 @@ function applyOverrides(prices, overrides) {
   return { ...prices, products };
 }
 
-/** Lista skladnikow do ekranu "Skladniki", posortowana alfabetycznie. */
+/** Lista skladnikow do ekranu "Skladniki", posortowana alfabetycznie.
+    Cene rozstrzyga resolveProduct z calc.js - ta sama funkcja, ktorej uzywa
+    kalkulator, zeby oba ekrany nie mogly pokazac roznych kwot. */
 export function ingredientList(catalog, prices) {
   return Object.entries(catalog)
     .map(([key, cat]) => {
-      const p = (prices.products || {})[key] || {};
-      const src = sourceOf(cat);
+      const raw = (prices.products || {})[key] || {};
+      const r = resolveProduct(key, catalog, prices) || {};
       return {
         key,
         name: cat.name || key,
         pack: cat.pack,
         unit: cat.unit,
-        source: src,
-        manual: src === 'manual',
-        url: p.url || cat.url || null,
-        synced: src === 'manual' ? true : !!p.syncedAt,
-        syncedAt: p.syncedAt || null,
-        title: p.title || null,
-        price: src === 'manual' ? (p.price ?? cat.price) : (p.price ?? null),
-        bonusPrice: p.bonusPrice ?? null,
-        bonusLabel: p.bonusLabel ?? null,
-        bonusUntil: p.bonusUntil ?? null,
-        overridden: !!p.overridden,
-        ok: src === 'manual' ? true : p.ok !== false && p.price != null,
-        warning: p.warning || null,
+        source: sourceOf(cat),
+        manual: sourceOf(cat) === 'manual',
+        url: r.url || cat.url || null,
+        synced: r.synced !== false,
+        syncedAt: r.syncedAt || null,
+        title: raw.title || null,
+        price: r.price ?? null,
+        bonusPrice: r.bonusPrice ?? null,
+        bonusLabel: r.bonusLabel ?? null,
+        bonusUntil: r.bonusUntil ?? null,
+        overridden: !!r.overridden,
+        ok: r.ok !== false && r.price != null,
+        warning: r.warning || null,
       };
     })
     .sort((a, b) => a.name.localeCompare(b.name, 'pl'));
