@@ -238,6 +238,21 @@ main{max-width:var(--kolumna);margin-inline:auto;
 .sheet .shead{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 0 10px}
 .sheet .shead h2{margin:0;font-size:19px;font-weight:600;letter-spacing:-.02em}
 
+/* ───────── przelacznik trzech opcji ───────── */
+.switch2{display:flex;gap:2px;padding:3px;background:var(--card-2);
+  border-radius:11px;margin-top:2px}
+.switch2 button{flex:1;font:inherit;font-size:14px;font-weight:500;letter-spacing:-.01em;
+  border:0;background:transparent;color:var(--label-2);padding:8px 4px;border-radius:9px;
+  cursor:pointer;min-height:38px}
+.switch2 button[aria-pressed="true"]{background:var(--card);color:var(--label);
+  box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.switch2 button:active{transform:scale(.985)}
+
+/* Przycisk, ktory czeka na GitHuba - pulsuje, zeby bylo widac, ze cos trwa. */
+.sync button[data-busy]{opacity:.55;pointer-events:none;animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.55}50%{opacity:.85}}
+@media (prefers-reduced-motion:reduce){.sync button[data-busy]{animation:none}}
+
 /* ───────── pola formularza ───────── */
 .field{display:flex;align-items:center;gap:12px;padding:10px 14px;min-height:50px;border-top:.5px solid var(--sep)}
 .field:first-child{border-top:0}

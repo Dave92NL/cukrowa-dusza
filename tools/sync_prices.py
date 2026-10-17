@@ -368,8 +368,10 @@ def main():
         for key, msg in sorted(warnings):
             print("  %-14s %s" % (key, msg))
 
-    ok_ah = sum(1 for k, v in products.items() if v.get("source") == "ah" and v.get("ok"))
-    ok_bt = sum(1 for k, v in products.items() if v.get("source") == "baktotaal" and v.get("ok"))
+    # Liczymy TYLKO to, co bylo w tym przebiegu - inaczej po --only raport
+    # pokazuje "9/1", bo miesza caly plik z biezacym zakresem.
+    ok_ah = sum(1 for k in ah if results.get(k, {}).get("ok"))
+    ok_bt = sum(1 for k in bt if results.get(k, {}).get("ok"))
     print("\nPobrano poprawnie %d z %d  (Albert Heijn %d/%d, baktotaal %d/%d)."
           % (ok_count, len(targets), ok_ah, len(ah), ok_bt, len(bt)))
 

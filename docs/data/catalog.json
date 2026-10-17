@@ -15,37 +15,165 @@
     "Jednostki bazowe: g, ml, szt. 'pack' zawsze w jednostce bazowej.",
     "Ceny zawsze w GROSZACH jako liczby calkowite (2,79 EUR = 279)."
   ],
-
-  "maslo":         { "name": "Masło",            "source": "ah", "query": "ah roomboter ongezouten", "pack": 250,  "unit": "g" },
-  "cukier":        { "name": "Cukier",           "source": "ah", "query": "ah kristalsuiker",        "pack": 1000, "unit": "g" },
-  "maka":          { "name": "Mąka",             "source": "ah", "query": "ah patentbloem",          "pack": 1000, "unit": "g" },
-  "jajka":         { "name": "Jajka",            "source": "ah", "query": "ah eieren vrije uitloop middel", "pack": 10, "unit": "szt" },
-  "maslanka":      { "name": "Maślanka",         "source": "ah", "query": "ah karnemelk",            "pack": 1000, "unit": "ml" },
-  "kakao":         { "name": "Kakao",            "source": "ah", "query": "ah cacaopoeder",          "pack": 250,  "unit": "g" },
-  "mascarpone":    { "name": "Mascarpone",       "source": "ah", "query": "ah mascarpone",           "pack": 250,  "unit": "g" },
-  "smietana":      { "name": "Śmietana 35%",     "source": "ah", "query": "ah slagroom",             "pack": 250,  "unit": "ml" },
-  "cukier_puder":  { "name": "Cukier puder",     "source": "ah", "query": "ah poedersuiker",         "pack": 500,  "unit": "g" },
-  "mleko":         { "name": "Mleko",            "source": "ah", "query": "ah volle melk",           "pack": 1000, "unit": "ml" },
-  "czekolada":     { "name": "Czekolada gorzka", "source": "ah", "query": "ah pure chocolade",       "pack": 200,  "unit": "g" },
-  "serek":         { "name": "Serek śmietankowy","source": "ah", "query": "philadelphia naturel",    "pack": 200,  "unit": "g" },
-  "bakpoeder":     { "name": "Proszek do pieczenia", "source": "ah", "query": "dr oetker bakpoeder", "pack": 70,   "unit": "g" },
-
-  "barwnik":       { "name": "Barwnik ProGel czerwony", "source": "baktotaal", "pack": 25, "unit": "g",
-                     "url": "https://www.baktotaal.nl/rd-kleurstof-progel-red-25-gram" },
-  "barwnik_czarny":{ "name": "Barwnik ProGel czarny",   "source": "baktotaal", "pack": 25, "unit": "g",
-                     "url": "https://www.baktotaal.nl/rd-kleurstof-progel-black-25-gram" },
-  "masa_cukrowa":  { "name": "Masa cukrowa biała",      "source": "baktotaal", "pack": 1000, "unit": "g",
-                     "url": "https://www.baktotaal.nl/brandnewcake-fondant-glazuur-wit-1kg" },
-  "posypka":       { "name": "Posypka World of Magic",  "source": "baktotaal", "pack": 90, "unit": "g",
-                     "url": "https://www.baktotaal.nl/sprinkles-world-of-magic-90g" },
-  "podklad_20":    { "name": "Podkład Ø20 cm",          "source": "baktotaal", "pack": 1, "unit": "szt",
-                     "url": "https://www.baktotaal.nl/cakeboard-zilver-rond-o20cm" },
-  "podklad_22":    { "name": "Podkład Ø22 cm",          "source": "baktotaal", "pack": 1, "unit": "szt",
-                     "url": "https://www.baktotaal.nl/cakeboard-zilver-rond-o22cm" },
-  "pudelko_25":    { "name": "Pudełko 25×25×15 cm",     "source": "baktotaal", "pack": 1, "unit": "szt",
-                     "url": "https://www.baktotaal.nl/pme-taartdoos-25x25x15cm" },
-  "rekawy":        { "name": "Rękawy jednorazowe",      "source": "baktotaal", "pack": 12, "unit": "szt",
-                     "url": "https://www.baktotaal.nl/wilton-wegwerp-spuitzakken-30cm-12-stuks" },
-
-  "wanilia":       { "name": "Ekstrakt waniliowy", "source": "manual", "pack": 50, "unit": "ml", "price": 349 }
+  "maslo": {
+    "name": "Masło",
+    "source": "ah",
+    "query": "ah roomboter ongezouten",
+    "pack": 250,
+    "unit": "g"
+  },
+  "cukier": {
+    "name": "Cukier",
+    "source": "ah",
+    "query": "ah kristalsuiker",
+    "pack": 1000,
+    "unit": "g"
+  },
+  "maka": {
+    "name": "Mąka",
+    "source": "ah",
+    "query": "ah patentbloem",
+    "pack": 1000,
+    "unit": "g"
+  },
+  "jajka": {
+    "name": "Jajka",
+    "source": "ah",
+    "query": "ah eieren vrije uitloop middel",
+    "pack": 10,
+    "unit": "szt"
+  },
+  "maslanka": {
+    "name": "Maślanka",
+    "source": "ah",
+    "query": "ah karnemelk",
+    "pack": 1000,
+    "unit": "ml"
+  },
+  "kakao": {
+    "name": "Kakao",
+    "source": "ah",
+    "query": "ah cacaopoeder",
+    "pack": 250,
+    "unit": "g"
+  },
+  "mascarpone": {
+    "name": "Mascarpone",
+    "source": "ah",
+    "query": "ah mascarpone",
+    "pack": 250,
+    "unit": "g"
+  },
+  "smietana": {
+    "name": "Śmietana 35%",
+    "source": "ah",
+    "query": "ah slagroom",
+    "pack": 250,
+    "unit": "ml"
+  },
+  "cukier_puder": {
+    "name": "Cukier puder",
+    "source": "ah",
+    "query": "ah poedersuiker",
+    "pack": 500,
+    "unit": "g"
+  },
+  "mleko": {
+    "name": "Mleko",
+    "source": "ah",
+    "query": "ah volle melk",
+    "pack": 1000,
+    "unit": "ml"
+  },
+  "czekolada": {
+    "name": "Czekolada gorzka",
+    "source": "ah",
+    "query": "ah pure chocolade",
+    "pack": 200,
+    "unit": "g"
+  },
+  "serek": {
+    "name": "Serek śmietankowy",
+    "source": "ah",
+    "query": "philadelphia naturel",
+    "pack": 200,
+    "unit": "g"
+  },
+  "bakpoeder": {
+    "name": "Proszek do pieczenia",
+    "source": "ah",
+    "query": "dr oetker bakpoeder",
+    "pack": 70,
+    "unit": "g"
+  },
+  "barwnik": {
+    "name": "Barwnik ProGel czerwony",
+    "source": "baktotaal",
+    "pack": 25,
+    "unit": "g",
+    "url": "https://www.baktotaal.nl/rd-kleurstof-progel-red-25-gram"
+  },
+  "barwnik_czarny": {
+    "name": "Barwnik ProGel czarny",
+    "source": "baktotaal",
+    "pack": 25,
+    "unit": "g",
+    "url": "https://www.baktotaal.nl/rd-kleurstof-progel-black-25-gram"
+  },
+  "masa_cukrowa": {
+    "name": "Masa cukrowa biała",
+    "source": "baktotaal",
+    "pack": 1000,
+    "unit": "g",
+    "url": "https://www.baktotaal.nl/brandnewcake-fondant-glazuur-wit-1kg"
+  },
+  "posypka": {
+    "name": "Posypka World of Magic",
+    "source": "baktotaal",
+    "pack": 90,
+    "unit": "g",
+    "url": "https://www.baktotaal.nl/sprinkles-world-of-magic-90g"
+  },
+  "podklad_20": {
+    "name": "Podkład Ø20 cm",
+    "source": "baktotaal",
+    "pack": 1,
+    "unit": "szt",
+    "url": "https://www.baktotaal.nl/cakeboard-zilver-rond-o20cm"
+  },
+  "podklad_22": {
+    "name": "Podkład Ø22 cm",
+    "source": "baktotaal",
+    "pack": 1,
+    "unit": "szt",
+    "url": "https://www.baktotaal.nl/cakeboard-zilver-rond-o22cm"
+  },
+  "pudelko_25": {
+    "name": "Pudełko 25×25×15 cm",
+    "source": "baktotaal",
+    "pack": 1,
+    "unit": "szt",
+    "url": "https://www.baktotaal.nl/pme-taartdoos-25x25x15cm"
+  },
+  "rekawy": {
+    "name": "Rękawy jednorazowe",
+    "source": "baktotaal",
+    "pack": 12,
+    "unit": "szt",
+    "url": "https://www.baktotaal.nl/wilton-wegwerp-spuitzakken-30cm-12-stuks"
+  },
+  "wanilia": {
+    "name": "Ekstrakt waniliowy",
+    "source": "manual",
+    "pack": 50,
+    "unit": "ml",
+    "price": 349
+  },
+  "podklad_25": {
+    "name": "Podkład Ø25 cm",
+    "source": "baktotaal",
+    "pack": 1,
+    "unit": "szt",
+    "url": "https://www.baktotaal.nl/cakeboard-zilver-rond-o25cm"
+  }
 }

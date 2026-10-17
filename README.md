@@ -20,6 +20,7 @@ docs/                    ← GitHub Pages serwuje stąd
     calc.js              silnik kalkulacji — czyste funkcje, zero DOM
     store.js             IndexedDB: receptury, stawka, marże
     prices.js            ładowanie katalogu i cen
+    github.js            uruchamianie synchronizacji z telefonu
     ui.js  app.js        renderowanie i logika
   data/
     catalog.json         Twoje składniki → produkty w sklepach (edytujesz ręcznie)
@@ -34,6 +35,7 @@ tools/
   baktotaal.py           odczyt cen z baktotaal.nl
   find_baktotaal.py      wyszukiwarka produktów w baktotaal.nl
   catalog_keys.py        klucze katalogu wg źródła (używa workflow)
+  add_ingredient.py      dodaje składnik do katalogu (używa workflow)
   test_sync.py           19 testów części pythonowej
   summary.py             podsumowanie przebiegu
   make_icons.py          generator ikon z logo (macOS, uzywa sips)
@@ -187,6 +189,44 @@ Zloto z logo (`#C9A227`) ma na bieli kontrast 2,2:1, czyli ponizej normy
 czytelnosci - stad przyciemnienie w jasnym motywie i rozjasnienie w ciemnym.
 Czerwien ostrzezen i zielen marzy zostaja poza paleta marki: kolor, ktory mowi
 "sprawdz cene", musi odcinac sie od brandingu, a nie z nim zlewac.
+
+## Odświeżanie cen z telefonu
+
+Ceny pobierają się same co noc, ale po dodaniu składnika nie ma sensu czekać
+do rana. Aplikacja potrafi uruchomić workflow na żądanie.
+
+**Dlaczego przez GitHuba, a nie wprost ze sklepów:** ani `api.ah.nl`, ani
+`baktotaal.nl` nie wysyłają nagłówków CORS, więc przeglądarka nie może ich
+wywołać. `api.github.com` wysyła (`allow-origin: *`), więc aplikacja prosi
+GitHuba, żeby to on pobrał ceny po swojej stronie i zapisał w repozytorium.
+Aplikacja odpytuje potem sam plik `prices.json`, a nie status przebiegu —
+między commitem a publikacją na Pages mija jeszcze chwila, a liczy się moment,
+w którym aplikacja naprawdę widzi nową cenę.
+
+### Token
+
+Ustawienia → **Połączenie z GitHubem**. Właściciel i repozytorium wykrywają się
+z adresu strony; zostaje wkleić token.
+
+Potrzebny jest **fine-grained personal access token** z dostępem tylko do tego
+jednego repozytorium i uprawnieniem **Actions: write**:
+Settings → Developer settings → Personal access tokens → Fine-grained tokens.
+
+**Token zostaje wyłącznie w IndexedDB tej przeglądarki — nigdy nie trafia do
+repozytorium.** Repo jest publiczne, więc token w pliku oznaczałby, że każdy
+może uruchamiać akcje na Twoim koncie. Konsekwencja: token jest czytelny dla
+kogoś, kto ma odblokowany telefon, i trzeba go wpisać ponownie po wyczyszczeniu
+danych przeglądarki.
+
+### Dodawanie produktu z telefonu
+
+Składniki → **Dodaj produkt**. Wybierasz sklep, podajesz nazwę i opakowanie,
+a dla Baktotaal wklejasz adres produktu (dla AH kod EAN albo nazwę). Aplikacja
+wysyła to do workflow, ten sprawdza produkt, dopisuje go do `catalog.json`,
+pobiera cenę i commituje. Zajmuje 1–3 minuty; aplikacja czeka i sama się odświeża.
+
+Workflow sprawdza nowy wpis **zanim** trafi do katalogu — zły wpis wywalałby
+synchronizację wszystkich pozostałych składników co noc.
 
 ## VAT: zawsze brutto
 

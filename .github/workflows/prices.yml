@@ -1,9 +1,13 @@
 name: Ceny (Albert Heijn + Baktotaal)
 
 # Dwa niezalezne automaty w tym repo:
-#   ten workflow  -> aktualizuje ceny (cron)
+#   ten workflow  -> aktualizuje ceny (cron, recznie, albo na zadanie z telefonu)
 #   GitHub Pages  -> wdraza aplikacje przy kazdym pushu (bez workflow)
 # Awaria jednego nie blokuje drugiego.
+#
+# Aplikacja na telefonie uruchamia ten workflow przez API GitHuba
+# (workflow_dispatch). Dzieki temu cena nowego skladnika pojawia sie od razu
+# po dodaniu, a nie dopiero nastepnego ranka.
 
 on:
   schedule:
@@ -15,8 +19,40 @@ on:
         description: "Tylko wybrane skladniki, oddzielone spacja (puste = wszystkie)"
         required: false
         type: string
+      dodaj_klucz:
+        description: "Nowy skladnik: identyfikator, np. podklad_25"
+        required: false
+        type: string
+      dodaj_nazwa:
+        description: "Nowy skladnik: nazwa po polsku"
+        required: false
+        type: string
+      dodaj_zrodlo:
+        description: "Nowy skladnik: sklep"
+        required: false
+        type: choice
+        options: ["baktotaal", "ah", "manual"]
+        default: "baktotaal"
+      dodaj_pack:
+        description: "Nowy skladnik: zawartosc opakowania (liczba)"
+        required: false
+        type: string
+      dodaj_unit:
+        description: "Nowy skladnik: jednostka"
+        required: false
+        type: choice
+        options: ["g", "ml", "szt"]
+        default: "szt"
+      dodaj_wartosc:
+        description: "Nowy skladnik: adres strony (baktotaal) albo EAN/nazwa (AH)"
+        required: false
+        type: string
+      dodaj_cena:
+        description: "Nowy skladnik: cena w EUR (tylko dla zrodla manual)"
+        required: false
+        type: string
 
-# Zapobiega nakladaniu sie przebiegow, gdyby cron spotkal reczne uruchomienie.
+# Zapobiega nakladaniu sie przebiegow, gdyby cron spotkal zadanie z telefonu.
 concurrency:
   group: ceny
   cancel-in-progress: false
@@ -35,16 +71,40 @@ jobs:
       - name: Testy czesci pythonowej
         run: python3 tools/test_sync.py
 
+      # Nowy skladnik sprawdzany jest ZANIM trafi do katalogu - zly wpis
+      # wywalalby synchronizacje wszystkich pozostalych co noc.
+      - name: Dodaj nowy skladnik
+        if: inputs.dodaj_klucz != ''
+        env:
+          KLUCZ:   ${{ inputs.dodaj_klucz }}
+          NAZWA:   ${{ inputs.dodaj_nazwa }}
+          ZRODLO:  ${{ inputs.dodaj_zrodlo }}
+          PACK:    ${{ inputs.dodaj_pack }}
+          UNIT:    ${{ inputs.dodaj_unit }}
+          WARTOSC: ${{ inputs.dodaj_wartosc }}
+          CENA:    ${{ inputs.dodaj_cena }}
+        run: |
+          python3 tools/add_ingredient.py \
+            --zrodlo "$ZRODLO" --klucz "$KLUCZ" --nazwa "$NAZWA" \
+            --pack "$PACK" --unit "$UNIT" \
+            --wartosc "$WARTOSC" --cena "$CENA"
+
       # baktotaal.nl dziala bez tokenu - sprawdzamy go osobno, zeby brak
       # tokenu Apify nie blokowal aktualizacji podkladow i barwnikow.
       - name: Pobierz ceny
         env:
           APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
           ONLY: ${{ inputs.only }}
+          NOWY: ${{ inputs.dodaj_klucz }}
         run: |
+          # Po dodaniu skladnika pobieramy tylko jego cene - uzytkownik czeka
+          # na telefonie, a pelny przebieg trwa kilka minut.
+          if [ -n "$NOWY" ]; then ONLY="$NOWY"; fi
           if [ -z "$APIFY_TOKEN" ]; then
             echo "::warning::Brak sekretu APIFY_TOKEN - pomijam Albert Heijn, pobieram tylko Baktotaal."
-            ONLY=$(python3 tools/catalog_keys.py baktotaal)
+            if [ -z "$ONLY" ]; then
+              ONLY=$(python3 tools/catalog_keys.py baktotaal)
+            fi
             if [ -z "$ONLY" ]; then
               echo '::error::Brak tokenu i brak produktow Baktotaal - nie ma czego pobierac.'
               exit 1
@@ -56,16 +116,20 @@ jobs:
             python3 tools/sync_prices.py
           fi
 
-      - name: Commituj tylko gdy ceny sie zmienily
+      - name: Commituj tylko gdy cos sie zmienilo
         run: |
-          if git diff --quiet -- docs/data/prices.json; then
-            echo "Ceny bez zmian - nie tworze commita."
+          if git diff --quiet -- docs/data/prices.json docs/data/catalog.json; then
+            echo "Bez zmian - nie tworze commita."
             exit 0
           fi
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/data/prices.json
-          git commit -m "Ceny AH $(date -u +%Y-%m-%d)"
+          git add docs/data/prices.json docs/data/catalog.json
+          if [ -n "${{ inputs.dodaj_klucz }}" ]; then
+            git commit -m "Nowy skladnik: ${{ inputs.dodaj_klucz }}"
+          else
+            git commit -m "Ceny $(date -u +%Y-%m-%d)"
+          fi
           git push
 
       # Ostrzezenia widoczne w podsumowaniu przebiegu, bez grzebania w logach.

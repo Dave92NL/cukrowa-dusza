@@ -42,7 +42,8 @@
 import { fmt, fmtPlain, parseMoney, parseAmount } from './js/money.js';
 import { ingredientList } from './js/prices.js';
 import { cakeCost, unitPrice, lineCost, bonusActive, resolveProduct, sourceOf,
-         diameterFactor, scaleRecipe, pricesAgeDays } from './js/calc.js';
+         diameterFactor, scaleRecipe, pricesAgeDays, catalogKey } from './js/calc.js';
+import { detectRepo } from './js/github.js';
 
 const out = document.getElementById('out');
 let pass = 0, fail = 0, group = null;
@@ -315,6 +316,37 @@ t('ceny nigdy nie pobrane są oznaczone, a nie udają świeżych', () => {
     .filter(([, v]) => v.ok !== false && !v.syncedAt).map(([k]) => k);
   const resolved = bezZnacznika.map(k => resolveProduct(k, realItems, realPrices));
   if (resolved.some(r => r && r.synced)) throw new Error('produkt bez syncedAt udaje zsynchronizowany');
+});
+
+// ───────── synchronizacja na zadanie ─────────
+grp('Dodawanie produktu z telefonu');
+t('polska nazwa zamienia się na poprawny klucz', () => {
+  eq(catalogKey('Podkład Ø25 cm'), 'podklad_25_cm');
+  eq(catalogKey('Barwnik ProGel czerwony'), 'barwnik_progel_czerwony');
+  eq(catalogKey('Żółć cytrynowa'), 'zolc_cytrynowa');
+});
+t('klucz nigdy nie zaczyna się od cyfry ani znaku', () => {
+  for (const n of ['25 cm podkład', '!!!', '   ', '___']) {
+    const k = catalogKey(n);
+    if (!/^[a-z][a-z0-9_]{1,39}$/.test(k)) throw new Error(`"${n}" dało zły klucz "${k}"`);
+  }
+});
+t('klucz nie kończy się podkreśleniem po przycięciu do 40 znaków', () => {
+  const k = catalogKey('a'.repeat(39) + ' bardzo długa nazwa produktu');
+  if (k.endsWith('_')) throw new Error(`klucz kończy się podkreśleniem: "${k}"`);
+  if (k.length > 40) throw new Error(`klucz za długi: ${k.length}`);
+});
+t('repozytorium wykryte z adresu projektu', () => {
+  eq(detectRepo({ hostname:'dawid.github.io', pathname:'/cukrowa-dusza/' }),
+     { owner:'dawid', repo:'cukrowa-dusza' });
+});
+t('repozytorium wykryte z adresu strony użytkownika', () => {
+  eq(detectRepo({ hostname:'dawid.github.io', pathname:'/' }),
+     { owner:'dawid', repo:'dawid.github.io' });
+});
+t('poza github.io nie zgaduje repozytorium', () => {
+  isNull(detectRepo({ hostname:'localhost', pathname:'/' }));
+  isNull(detectRepo({ hostname:'example.com', pathname:'/cukrowa/' }));
 });
 
 const sum = document.getElementById('sum');

@@ -5,13 +5,13 @@
 // na zawsze - dlatego stale-while-revalidate zamiast cache-first,
 // skipWaiting + clients.claim, i czyszczenie starych cache przy aktywacji.
 
-const VERSION = '1.1.0';
+const VERSION = '1.2.0';
 const CACHE = `cukrowa-dusza-${VERSION}`;
 
 const SHELL = [
   './', './index.html', './app.css', './manifest.webmanifest',
   './js/app.js', './js/ui.js', './js/calc.js', './js/money.js',
-  './js/store.js', './js/prices.js',
+  './js/store.js', './js/prices.js', './js/github.js',
   './data/catalog.json', './data/prices.json',
   './icons/icon-180.png', './icons/icon-192.png', './icons/icon-512.png',
   './icons/favicon-64.png', './icons/napis.png',

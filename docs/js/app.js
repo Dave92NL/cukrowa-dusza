@@ -1,9 +1,10 @@
 // Spoiwo: stan, zdarzenia, zapis. Kalkulacja siedzi w calc.js, rysowanie w ui.js.
 
-import { cakeCost, scaleRecipe, diameterFactor } from './calc.js';
+import { cakeCost, scaleRecipe, diameterFactor, catalogKey } from './calc.js';
 import { fmt, fmtPlain, parseMoney, parseAmount } from './money.js';
 import * as store from './store.js';
 import { load as loadPrices, ingredientList } from './prices.js';
+import * as gh from './github.js';
 import {
   $, $$, bind, mountLines, updateCosts, renderBonusHint, renderCakeHeader,
   renderSync, renderIngredients, renderCakes, toast, showScreen, openSheet, closeSheets,
@@ -13,7 +14,7 @@ const state = {
   catalog: {}, prices: { products: {} }, error: null,
   settings: { ...store.DEFAULT_SETTINGS },
   recipes: [], activeId: null, screen: 'kalk',
-  editing: null, pricingKey: null,
+  editing: null, pricingKey: null, newShop: 'baktotaal', busy: false,
 };
 
 const active = () => state.recipes.find(r => r.id === state.activeId) || null;
@@ -223,6 +224,16 @@ const actions = {
     $('#s-rate').value = fmtPlain(state.settings.hourlyRate);
     $('#s-margin').value = String(Math.round(state.settings.marginPct * 100));
     $('#s-alert').value = String(Math.round(state.settings.marginAlert * 100));
+    gh.getConfig().then(c => {
+      $('#g-owner').value = c.owner;
+      $('#g-repo').value = c.repo;
+      $('#g-token').value = c.token;
+      if (c.autoDetected && c.owner) {
+        bind('gh-status').innerHTML =
+          `Wykryłem repozytorium <b>${c.owner}/${c.repo}</b> z adresu strony. `
+          + 'Wklej token z zakresem <b>Actions: write</b> — zostanie tylko na tym telefonie.';
+      }
+    });
     bind('app-synced').textContent = state.prices.syncedAt
       ? new Date(state.prices.syncedAt).toLocaleDateString('pl-PL')
       : 'nigdy';
@@ -291,9 +302,138 @@ const actions = {
   import: () => bind('import-input').click(),
 
   'close-sheet': () => { closeSheets(); state.editing = null; state.pricingKey = null; },
+
+  // ───────── GitHub: synchronizacja na zadanie ─────────
+
+  'test-github': async () => {
+    await gh.saveConfig({
+      owner: $('#g-owner').value, repo: $('#g-repo').value, token: $('#g-token').value,
+    });
+    const el = bind('gh-status');
+    el.textContent = 'Sprawdzam…';
+    try {
+      const nazwa = await gh.testConnection();
+      el.innerHTML = `Połączono z <b>${nazwa}</b>. Token został zapisany tylko na tym telefonie.`;
+      toast('Połączenie działa.');
+    } catch (e) {
+      el.textContent = e.message;
+      toast('Nie udało się połączyć.');
+    }
+  },
+
+  'refresh-prices': async () => {
+    if (state.busy) return;
+    if (!(await gh.isConfigured())) {
+      toast('Najpierw połącz aplikację z GitHubem w Ustawieniach.', 4500);
+      return actions.settings();
+    }
+    const btn = bind('refresh-btn');
+    const przed = state.prices.syncedAt || '';
+    state.busy = true;
+    btn.dataset.busy = '1';
+    btn.textContent = 'Pobieram…';
+    try {
+      await gh.dispatch({});
+      toast('GitHub pobiera ceny. To potrwa 1–3 minuty.', 4000);
+      await gh.waitForPrices(d => d.syncedAt && d.syncedAt !== przed,
+        { onTick: sek => { btn.textContent = `${sek} s`; } });
+      await reloadPrices();
+      refreshAll();
+      toast('Ceny zaktualizowane.');
+    } catch (e) {
+      toast(e.message, 6000);
+    } finally {
+      state.busy = false;
+      delete btn.dataset.busy;
+      btn.textContent = 'Odśwież';
+    }
+  },
+
+  // ───────── nowy produkt ─────────
+
+  'new-ingredient': () => {
+    state.newShop = 'baktotaal';
+    $('#n-name').value = '';
+    $('#n-pack').value = '1';
+    $('#n-unit').value = 'szt';
+    $('#n-url').value = '';
+    $('#n-ah').value = '';
+    $('#n-price').value = '';
+    bind('new-status').hidden = true;
+    applyShop();
+    openSheet('newIngredient');
+  },
+
+  'save-ingredient': async () => {
+    if (state.busy) return;
+    const nazwa = $('#n-name').value.trim();
+    const pack = parseAmount($('#n-pack').value);
+    const unit = $('#n-unit').value;
+    const shop = state.newShop;
+
+    if (!nazwa) return toast('Podaj nazwę produktu.');
+    if (!pack || pack <= 0) return toast('Podaj zawartość opakowania.');
+
+    let wartosc = '', cena = '';
+    if (shop === 'baktotaal') {
+      wartosc = $('#n-url').value.trim();
+      if (!wartosc.startsWith('https://www.baktotaal.nl/')) {
+        return toast('Wklej adres produktu z baktotaal.nl');
+      }
+    } else if (shop === 'ah') {
+      wartosc = $('#n-ah').value.trim();
+      if (!wartosc) return toast('Podaj kod EAN albo nazwę do wyszukania.');
+    } else {
+      const c = parseMoney($('#n-price').value);
+      if (!c || c <= 0) return toast('Podaj cenę opakowania.');
+      cena = (c / 100).toFixed(2);
+    }
+
+    if (shop !== 'manual' && !(await gh.isConfigured())) {
+      toast('Do pobrania ceny potrzebne jest połączenie z GitHubem.', 4500);
+      return actions.settings();
+    }
+
+    const klucz = catalogKey(nazwa);
+    const status = bind('new-status');
+    status.hidden = false;
+    status.textContent = 'Wysyłam do GitHuba…';
+    state.busy = true;
+    try {
+      await gh.dispatch({
+        dodaj_klucz: klucz, dodaj_nazwa: nazwa, dodaj_zrodlo: shop,
+        dodaj_pack: String(pack), dodaj_unit: unit,
+        dodaj_wartosc: wartosc, dodaj_cena: cena,
+      });
+      status.textContent = 'GitHub sprawdza produkt i pobiera cenę…';
+      await gh.waitForPrices(d => !!d.products?.[klucz],
+        { onTick: sek => { status.textContent = `Czekam na cenę… ${sek} s`; } });
+      await reloadPrices();
+      closeSheets();
+      refreshAll();
+      toast(`Dodano: ${nazwa}`);
+    } catch (e) {
+      status.textContent = e.message;
+    } finally {
+      state.busy = false;
+    }
+  },
 };
 
+function applyShop() {
+  $$('[data-shop]').forEach(b =>
+    b.setAttribute('aria-pressed', String(b.dataset.shop === state.newShop)));
+  $$('[data-when]').forEach(el => { el.hidden = el.dataset.when !== state.newShop; });
+  bind('new-hint').textContent =
+    state.newShop === 'baktotaal' ? 'Otwórz produkt na baktotaal.nl i wklej adres z paska przeglądarki.'
+    : state.newShop === 'ah' ? 'Najpewniejszy jest kod EAN z opakowania. Nazwa też zadziała, ale wynik trzeba potwierdzić.'
+    : 'Produkt spoza obu sklepów — cenę prowadzisz sam i nic jej nie nadpisze.';
+}
+
 document.addEventListener('click', e => {
+  const shop = e.target.closest('[data-shop]');
+  if (shop) { state.newShop = shop.dataset.shop; applyShop(); return; }
+
   const btn = e.target.closest('[data-act]');
   if (btn) { actions[btn.dataset.act]?.(); return; }
 

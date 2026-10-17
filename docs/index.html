@@ -35,7 +35,7 @@
 <header class="nav" data-nav="skl" hidden>
   <div class="eyebrow">
     <span></span>
-    <button class="navbtn" data-act="help-ingredients" type="button">Skąd ceny?</button>
+    <button class="navbtn" data-act="new-ingredient" type="button">Dodaj produkt</button>
   </div>
   <h1>Składniki</h1>
   <p class="sub" data-bind="skl-sub"></p>
@@ -85,6 +85,7 @@
         <div class="t" data-bind="sync-title">—</div>
         <div class="s" data-bind="sync-sub"></div>
       </div>
+      <button type="button" data-act="refresh-prices" data-bind="refresh-btn">Odśwież</button>
     </div>
     <div data-bind="ingredients"></div>
     <p class="hint">Dotknij składnika, żeby wpisać cenę ręcznie. Ręczna cena wygrywa z synchronizacją i nie zostanie nadpisana.</p>
@@ -185,6 +186,46 @@
   </div>
 </div>
 
+<!-- ───────── arkusz: nowy produkt ───────── -->
+<div class="sheet" data-sheet="newIngredient" hidden role="dialog" aria-modal="true" aria-label="Nowy produkt">
+  <button class="scrim" data-act="close-sheet" type="button" aria-label="Zamknij"></button>
+  <div class="panel">
+    <div class="grab"></div>
+    <div class="shead">
+      <button class="navbtn" data-act="close-sheet" type="button">Anuluj</button>
+      <h2>Nowy produkt</h2>
+      <button class="navbtn" data-act="save-ingredient" type="button" style="font-weight:600">Dodaj</button>
+    </div>
+
+    <div class="ghead">Skąd brać cenę</div>
+    <div class="switch2" role="group" aria-label="Sklep">
+      <button type="button" data-shop="baktotaal" aria-pressed="true">Baktotaal</button>
+      <button type="button" data-shop="ah" aria-pressed="false">Albert Heijn</button>
+      <button type="button" data-shop="manual" aria-pressed="false">Ręcznie</button>
+    </div>
+
+    <div class="group" style="margin-top:12px">
+      <div class="field"><label for="n-name">Nazwa</label>
+        <div class="fin"><input id="n-name" class="wide" type="text" autocomplete="off"
+               placeholder="np. Podkład Ø25 cm"></div></div>
+      <div class="field"><label for="n-pack">Opakowanie</label>
+        <div class="fin"><input id="n-pack" type="text" inputmode="decimal" value="1">
+          <select id="n-unit"><option value="szt">szt</option><option value="g">g</option>
+            <option value="ml">ml</option></select></div></div>
+      <div class="field" data-when="baktotaal"><label for="n-url">Adres strony</label>
+        <div class="fin"><input id="n-url" class="wide" type="url" inputmode="url"
+               autocomplete="off" placeholder="wklej z baktotaal.nl"></div></div>
+      <div class="field" data-when="ah" hidden><label for="n-ah">Kod EAN lub nazwa</label>
+        <div class="fin"><input id="n-ah" class="wide" type="text" autocomplete="off"
+               placeholder="8710400514206"></div></div>
+      <div class="field" data-when="manual" hidden><label for="n-price">Cena opakowania</label>
+        <div class="fin"><input id="n-price" type="text" inputmode="decimal"><span class="unit">€</span></div></div>
+    </div>
+    <p class="hint" data-bind="new-hint"></p>
+    <p class="hint warn" data-bind="new-status" hidden></p>
+  </div>
+</div>
+
 <!-- ───────── arkusz: ustawienia ───────── -->
 <div class="sheet" data-sheet="settings" hidden role="dialog" aria-modal="true" aria-label="Ustawienia">
   <button class="scrim" data-act="close-sheet" type="button" aria-label="Zamknij"></button>
@@ -203,6 +244,22 @@
       <div class="field"><label for="s-alert">Alarm poniżej marży</label>
         <div class="fin"><input id="s-alert" type="text" inputmode="decimal"><span class="unit">%</span></div></div>
     </div>
+
+    <div class="ghead">Połączenie z GitHubem</div>
+    <div class="group">
+      <div class="field"><label for="g-owner">Właściciel</label>
+        <div class="fin"><input id="g-owner" class="wide" type="text" autocomplete="off"
+               autocapitalize="none" spellcheck="false" placeholder="nazwa użytkownika"></div></div>
+      <div class="field"><label for="g-repo">Repozytorium</label>
+        <div class="fin"><input id="g-repo" class="wide" type="text" autocomplete="off"
+               autocapitalize="none" spellcheck="false" placeholder="cukrowa-dusza"></div></div>
+      <div class="field"><label for="g-token">Token</label>
+        <div class="fin"><input id="g-token" class="wide" type="password" autocomplete="off"
+               autocapitalize="none" spellcheck="false" placeholder="github_pat_…"></div></div>
+    </div>
+    <button class="bigbtn secondary" data-act="test-github" type="button">Sprawdź połączenie</button>
+    <p class="hint" data-bind="gh-status">Token zostaje <b>tylko na tym telefonie</b> — nigdy nie trafia
+      do repozytorium, bo ono jest publiczne. Potrzebny zakres: <b>Actions: write</b> dla tego repo.</p>
 
     <div class="ghead">Kopia zapasowa</div>
     <div class="group pad">

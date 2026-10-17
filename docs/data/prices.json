@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-10-17T11:33:43Z",
+  "syncedAt": "2026-10-17T11:58:34Z",
   "sources": {
     "ah": "apify/studio-amba~albert-heijn-scraper",
     "baktotaal": "https://www.baktotaal.nl"
@@ -154,6 +154,22 @@
       "source": "baktotaal",
       "ok": true,
       "syncedAt": "2026-10-17T11:33:43Z"
+    },
+    "podklad_25": {
+      "title": "Cakeboard Zilver Rond",
+      "price": 198,
+      "netPrice": 181,
+      "vatRate": 1.09,
+      "bonusPrice": null,
+      "bonusLabel": null,
+      "bonusUntil": null,
+      "sku": "CC1010",
+      "ean": null,
+      "url": "https://www.baktotaal.nl/cakeboard-zilver-rond-o25cm",
+      "inStock": null,
+      "source": "baktotaal",
+      "ok": true,
+      "syncedAt": "2026-10-17T11:58:34Z"
     },
     "posypka": {
       "title": "Sprinkles World of Magic 90g",

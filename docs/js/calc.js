@@ -179,6 +179,23 @@ export function scaleRecipe(recipe, toDiameter) {
   };
 }
 
+/**
+ * Nazwa po polsku -> klucz katalogu. Klucz trafia do JSON-a i do adresu
+ * w workflow, wiec musi byc bez ogonkow, spacji i wielkich liter.
+ */
+export function catalogKey(name) {
+  const map = { 'ą':'a', 'ć':'c', 'ę':'e', 'ł':'l', 'ń':'n', 'ó':'o', 'ś':'s', 'ź':'z', 'ż':'z' };
+  const out = String(name || '').toLowerCase()
+    .replace(/[ąćęłńóśźż]/g, c => map[c])
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '')
+    .slice(0, 40)
+    .replace(/_+$/, '');
+  // Klucz musi zaczynac sie od litery - add_ingredient.py to sprawdza.
+  if (!out || !/^[a-z]/.test(out)) return 'p' + Date.now().toString(36);
+  return out;
+}
+
 /** Ile dni ma plik z cenami. Null gdy brak znacznika. */
 export function pricesAgeDays(prices, today = new Date()) {
   if (!prices || !prices.syncedAt) return null;
