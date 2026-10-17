@@ -187,7 +187,16 @@ def fetch_ah(token, key, entry):
     try:
         items = apify_run(token, query, fetch_details=bool(entry.get("ean")))
     except urllib.error.HTTPError as e:
-        return key, {"ok": False, "warning": "Apify HTTP %s: %s" % (e.code, e.reason)}
+        # Sam kod HTTP nic nie mowi - Apify opisuje powod w ciele odpowiedzi,
+        # a bez tego diagnoza konczy sie na zgadywaniu.
+        detail = ""
+        try:
+            body = json.loads(e.read().decode("utf-8", "replace"))
+            detail = body.get("error", {}).get("message") or str(body)[:200]
+        except Exception:                                    # noqa: BLE001
+            pass
+        return key, {"ok": False,
+                     "warning": "Apify HTTP %s: %s" % (e.code, detail or e.reason)}
     except Exception as e:                                   # noqa: BLE001
         return key, {"ok": False, "warning": "Apify blad: %s" % e}
 
