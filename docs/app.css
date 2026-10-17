@@ -1,0 +1,258 @@
+/* Tortownik — styl iOS. Font systemowy, bo na iPhonie to prawdziwe SF Pro:
+   ma gotowe tabele kerningu i optyczne rozmiary, ktorych zadny webfont nie zastapi. */
+
+:root{
+  --ground:#F2F2F7; --card:#FFFFFF; --card-2:#F2F2F7; --card-3:#E9E9EF;
+  --label:#1C1C1E; --label-2:#6E6E78; --label-3:#A3A3AD;
+  --sep:rgba(60,60,67,.13); --sep-strong:rgba(60,60,67,.26);
+  --accent:#0093D2; --accent-soft:rgba(0,147,210,.12);
+  --bonus:#E11D48; --bonus-soft:rgba(225,29,72,.11);
+  --good:#1D9D4E; --good-soft:rgba(29,157,78,.12);
+  --warn:#B4690E; --warn-soft:rgba(180,105,14,.12);
+  --chrome:rgba(246,246,249,.78);
+  --scrim:rgba(0,0,0,.3);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#000000; --card:#1C1C1E; --card-2:#2C2C2E; --card-3:#3A3A3C;
+    --label:#F3F3F6; --label-2:#9B9BA3; --label-3:#6A6A72;
+    --sep:rgba(84,84,88,.45); --sep-strong:rgba(84,84,88,.65);
+    --accent:#3FBDF4; --accent-soft:rgba(63,189,244,.16);
+    --bonus:#FF566F; --bonus-soft:rgba(255,86,111,.16);
+    --good:#3EDC72; --good-soft:rgba(62,220,114,.16);
+    --warn:#F0A830; --warn-soft:rgba(240,168,48,.16);
+    --chrome:rgba(22,22,24,.78);
+    --scrim:rgba(0,0,0,.5);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#000000; --card:#1C1C1E; --card-2:#2C2C2E; --card-3:#3A3A3C;
+  --label:#F3F3F6; --label-2:#9B9BA3; --label-3:#6A6A72;
+  --sep:rgba(84,84,88,.45); --sep-strong:rgba(84,84,88,.65);
+  --accent:#3FBDF4; --accent-soft:rgba(63,189,244,.16);
+  --bonus:#FF566F; --bonus-soft:rgba(255,86,111,.16);
+  --good:#3EDC72; --good-soft:rgba(62,220,114,.16);
+  --warn:#F0A830; --warn-soft:rgba(240,168,48,.16);
+  --chrome:rgba(22,22,24,.78);
+  --scrim:rgba(0,0,0,.5);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--ground);color:var(--label);
+  font:16px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  overscroll-behavior-y:none;
+}
+/* Tekst w interfejsie sie nie zaznacza; pola i kwoty - owszem. */
+body{-webkit-user-select:none;user-select:none}
+input,.selectable{-webkit-user-select:text;user-select:text}
+
+/* ───────── pasek nawigacyjny ───────── */
+.nav{
+  position:sticky;top:0;z-index:20;
+  background:var(--chrome);backdrop-filter:blur(22px) saturate(180%);
+  -webkit-backdrop-filter:blur(22px) saturate(180%);
+  padding:calc(env(safe-area-inset-top,0px) + 8px) 20px 8px;
+}
+.nav .eyebrow{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:26px}
+.nav h1{margin:1px 0 0;font-size:33px;line-height:1.12;font-weight:700;letter-spacing:-.025em;text-wrap:balance}
+.nav .sub{margin:2px 0 0;font-size:13.5px;color:var(--label-2);letter-spacing:-.01em}
+.navbtn{
+  font:inherit;font-size:16.5px;letter-spacing:-.01em;color:var(--accent);
+  background:none;border:0;padding:4px 2px;cursor:pointer;display:flex;align-items:center;gap:3px;
+  min-height:30px;
+}
+.navbtn:active{opacity:.4}
+.navbtn[disabled]{color:var(--label-3);opacity:1}
+.navbtn.destructive{color:var(--bonus)}
+
+/* ───────── tresc ───────── */
+main{padding:0 16px calc(env(safe-area-inset-bottom,0px) + 96px)}
+.screen[hidden]{display:none!important}
+
+.ghead{
+  font-size:12.5px;font-weight:600;text-transform:uppercase;letter-spacing:.055em;
+  color:var(--label-2);padding:20px 14px 7px;display:flex;justify-content:space-between;
+  align-items:baseline;gap:10px;
+}
+.ghead .act{text-transform:none;letter-spacing:-.01em;font-size:14px;font-weight:500;color:var(--accent);cursor:pointer}
+.group{background:var(--card);border-radius:16px;overflow:hidden}
+.group.pad{padding:4px 14px}
+
+.row{display:flex;align-items:center;gap:12px;padding:10px 14px;min-height:50px;border-top:.5px solid var(--sep);text-align:left}
+.row:first-child{border-top:0}
+.row.tappable{cursor:pointer;width:100%;background:none;border-left:0;border-right:0;border-bottom:0;font:inherit;color:inherit}
+.row.tappable:active{background:var(--card-2)}
+.row .main{flex:1 1 auto;min-width:0}
+.row .t{font-size:16px;letter-spacing:-.012em;display:flex;align-items:center;min-width:0}
+/* Skraca sie nazwa, nie znacznik - inaczej "Mascarpone BONUS" gubi wlasnie Bonus. */
+.nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.row .s{font-size:12.5px;color:var(--label-2);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .val{font-size:16px;color:var(--label-2);font-variant-numeric:tabular-nums;letter-spacing:-.01em;flex:0 0 auto}
+.chev{flex:0 0 auto;color:var(--label-3);display:flex}
+
+/* ───────── pole gramatury ───────── */
+.amt{display:flex;align-items:center;background:var(--card-2);border-radius:9px;padding:2px;flex:0 0 auto}
+.amt input{
+  font:inherit;font-size:16px;font-weight:600;font-variant-numeric:tabular-nums;
+  width:56px;text-align:right;border:0;background:transparent;color:var(--label);
+  padding:5px 2px 5px 6px;letter-spacing:-.015em;
+}
+.amt input:focus{outline:0}
+.amt .u{font-size:12.5px;color:var(--label-2);padding:0 8px 0 3px;font-weight:500}
+.amt:focus-within{box-shadow:0 0 0 2px var(--accent)}
+
+.cost{flex:0 0 auto;min-width:68px;text-align:right;font-size:16px;font-weight:600;
+  font-variant-numeric:tabular-nums;letter-spacing:-.015em}
+.cost.isBonus{color:var(--bonus)}
+.cost.isMissing{color:var(--warn);font-weight:500;font-size:13px}
+
+/* ───────── znaczniki ───────── */
+.tag{display:inline-flex;align-items:center;flex:0 0 auto;font-size:10.5px;font-weight:700;letter-spacing:.03em;
+  text-transform:uppercase;padding:1.5px 5px;border-radius:5px;margin-left:6px;vertical-align:middle;
+  background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.tag.b{background:var(--bonus-soft);color:var(--bonus)}
+.tag.g{background:var(--good-soft);color:var(--good)}
+.tag.w{background:var(--warn-soft);color:var(--warn)}
+.strike{text-decoration:line-through;color:var(--label-3)}
+
+/* ───────── podsumowanie kalkulacji ───────── */
+.sline{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:9px 0;
+  border-top:.5px solid var(--sep);font-size:15px}
+.sline:first-child{border-top:0}
+.sline .k{color:var(--label-2);letter-spacing:-.01em}
+.sline .v{font-variant-numeric:tabular-nums;font-weight:500;letter-spacing:-.015em;flex:0 0 auto}
+.sline.total{border-top:.5px solid var(--sep-strong);padding:13px 0 6px}
+.sline.total .k{color:var(--label);font-weight:600;font-size:16px}
+.sline.total .v{font-size:26px;font-weight:700;letter-spacing:-.03em}
+.sline.hero{padding:11px 0}
+.sline.hero .k{color:var(--label);font-weight:600}
+.sline.hero .v{font-size:21px;font-weight:700;color:var(--good);letter-spacing:-.025em}
+.sline.hero.low .v{color:var(--bonus)}
+
+.hint{font-size:12.5px;color:var(--label-2);padding:8px 14px 0;letter-spacing:-.005em;line-height:1.5}
+.hint b{color:var(--label);font-weight:600}
+.hint.warn{color:var(--warn)}
+
+/* ───────── przelacznik ───────── */
+.toggle{position:relative;flex:0 0 auto;width:51px;height:31px;border-radius:16px;border:0;
+  cursor:pointer;background:var(--sep-strong);padding:0;transition:background .2s ease}
+.toggle[aria-pressed="true"]{background:var(--good)}
+.toggle::after{content:"";position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;
+  background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .22s cubic-bezier(.32,.72,0,1)}
+.toggle[aria-pressed="true"]::after{transform:translateX(20px)}
+
+/* ───────── baner synchronizacji ───────── */
+.sync{display:flex;align-items:center;gap:11px;background:var(--card);border-radius:16px;padding:13px 14px}
+.sync .dot{flex:0 0 auto;width:9px;height:9px;border-radius:50%;background:var(--good);box-shadow:0 0 0 4px var(--good-soft)}
+.sync .dot.warn{background:var(--warn);box-shadow:0 0 0 4px var(--warn-soft)}
+.sync .dot.bad{background:var(--bonus);box-shadow:0 0 0 4px var(--bonus-soft)}
+.sync .main{flex:1 1 auto;min-width:0}
+.sync .t{font-size:15px;font-weight:500;letter-spacing:-.012em}
+.sync .s{font-size:12.5px;color:var(--label-2);margin-top:1px}
+
+/* ───────── torty ───────── */
+.cake{display:flex;align-items:center;gap:13px;padding:12px 14px;border-top:.5px solid var(--sep);
+  width:100%;background:none;border-left:0;border-right:0;border-bottom:0;font:inherit;color:inherit;
+  cursor:pointer;text-align:left}
+.cake:first-child{border-top:0}
+.cake:active{background:var(--card-2)}
+.swatch{flex:0 0 auto;width:46px;height:46px;border-radius:13px;display:grid;place-items:center;
+  font-size:16px;font-weight:700;color:#fff;letter-spacing:-.02em}
+.cake .main{flex:1 1 auto;min-width:0}
+.cake .t{font-size:16px;font-weight:500;letter-spacing:-.015em;display:flex;align-items:center;min-width:0}
+.cake .s{font-size:12.5px;color:var(--label-2);margin-top:2px}
+.cake .right{flex:0 0 auto;text-align:right}
+.cake .p{font-size:16px;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.015em}
+.cake .m{font-size:12px;color:var(--good);font-variant-numeric:tabular-nums;margin-top:2px;font-weight:500}
+.cake .m.low{color:var(--bonus)}
+
+/* ───────── pasek zakladek ───────── */
+.tabbar{
+  position:fixed;bottom:0;left:0;right:0;z-index:30;
+  background:var(--chrome);backdrop-filter:blur(22px) saturate(180%);
+  -webkit-backdrop-filter:blur(22px) saturate(180%);
+  border-top:.5px solid var(--sep);display:flex;
+  padding:8px 8px calc(env(safe-area-inset-bottom,0px) + 8px);
+}
+.tabbar button{flex:1;background:none;border:0;cursor:pointer;font:inherit;display:flex;
+  flex-direction:column;align-items:center;gap:3px;color:var(--label-3);padding:3px 0;min-height:44px}
+.tabbar button span{font-size:10.5px;font-weight:500;letter-spacing:-.005em}
+.tabbar button svg{display:block;width:26px;height:26px}
+.tabbar button[aria-pressed="true"]{color:var(--accent)}
+.tabbar button:active{transform:scale(.94)}
+
+/* ───────── arkusz modalny ───────── */
+.sheet{position:fixed;inset:0;z-index:50;display:flex;align-items:flex-end;justify-content:center}
+.sheet[hidden]{display:none!important}
+.sheet .scrim{position:absolute;inset:0;background:var(--scrim);border:0;padding:0;cursor:pointer;
+  -webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
+.sheet .panel{
+  position:relative;width:100%;max-width:520px;max-height:92vh;overflow-y:auto;
+  background:var(--ground);border-radius:16px 16px 0 0;
+  padding:0 16px calc(env(safe-area-inset-bottom,0px) + 20px);
+  box-shadow:0 -8px 40px rgba(0,0,0,.25);
+  animation:rise .36s cubic-bezier(.32,.72,0,1);
+}
+@keyframes rise{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.sheet .grab{width:38px;height:5px;border-radius:3px;background:var(--sep-strong);margin:8px auto 2px}
+.sheet .shead{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 0 10px}
+.sheet .shead h2{margin:0;font-size:19px;font-weight:600;letter-spacing:-.02em}
+
+/* ───────── pola formularza ───────── */
+.field{display:flex;align-items:center;gap:12px;padding:10px 14px;min-height:50px;border-top:.5px solid var(--sep)}
+.field:first-child{border-top:0}
+.field label{flex:1 1 auto;font-size:16px;letter-spacing:-.012em}
+.field .fin{flex:0 0 auto;display:flex;align-items:center;gap:5px}
+.field input,.field select{
+  font:inherit;font-size:16px;border:0;background:var(--card-2);color:var(--label);
+  border-radius:9px;padding:7px 10px;text-align:right;min-width:92px;
+  font-variant-numeric:tabular-nums;letter-spacing:-.01em;
+}
+.field input.wide{text-align:left;min-width:150px;font-variant-numeric:normal}
+.field input:focus,.field select:focus{outline:2px solid var(--accent);outline-offset:0}
+.field .unit{font-size:13px;color:var(--label-2);min-width:26px}
+
+.bigbtn{
+  display:block;width:100%;font:inherit;font-size:16.5px;font-weight:600;letter-spacing:-.015em;
+  border:0;border-radius:14px;padding:14px;cursor:pointer;margin-top:12px;
+  background:var(--accent);color:#fff;
+}
+.bigbtn:active{opacity:.75}
+.bigbtn.secondary{background:var(--card);color:var(--accent)}
+.bigbtn.destructive{background:var(--card);color:var(--bonus)}
+
+/* ───────── toast ───────── */
+.toast{
+  position:fixed;left:50%;transform:translateX(-50%);
+  bottom:calc(env(safe-area-inset-bottom,0px) + 86px);z-index:60;
+  background:var(--label);color:var(--ground);
+  padding:11px 17px;border-radius:12px;font-size:14.5px;font-weight:500;letter-spacing:-.01em;
+  box-shadow:0 8px 24px rgba(0,0,0,.25);max-width:calc(100vw - 32px);text-align:center;
+  animation:toastIn .3s cubic-bezier(.32,.72,0,1);
+}
+.toast[hidden]{display:none!important}
+@keyframes toastIn{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
+
+.empty{text-align:center;padding:48px 24px;color:var(--label-2)}
+.empty h3{margin:0 0 6px;font-size:17px;font-weight:600;color:var(--label);letter-spacing:-.02em}
+.empty p{margin:0;font-size:14px;line-height:1.55}
+
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  .tabbar button:active,.bigbtn:active{transform:none}
+}
+@media (prefers-reduced-transparency:reduce){
+  .nav,.tabbar{background:var(--ground);backdrop-filter:none;-webkit-backdrop-filter:none}
+}
+@media (prefers-contrast:more){
+  :root{--sep:rgba(60,60,67,.5);--sep-strong:rgba(60,60,67,.8)}
+  .group,.sync{border:1px solid var(--sep-strong)}
+}
