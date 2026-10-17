@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-10-17T11:58:34Z",
+  "syncedAt": "2026-10-17T12:44:06Z",
   "sources": {
     "ah": "apify/studio-amba~albert-heijn-scraper",
     "baktotaal": "https://www.baktotaal.nl"
@@ -9,7 +9,9 @@
       "title": "Dr. Oetker Bakpoeder",
       "price": 85,
       "bonusPrice": null,
-      "ok": true
+      "ok": false,
+      "warning": "Apify HTTP 400: Bad Request",
+      "stale": true
     },
     "barwnik": {
       "title": "RD Kleurstof ProGel 25 gram",
@@ -25,7 +27,7 @@
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-10-17T11:33:43Z"
+      "syncedAt": "2026-10-17T12:44:06Z"
     },
     "barwnik_czarny": {
       "title": "RD Kleurstof ProGel 25 gram",
@@ -41,43 +43,55 @@
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-10-17T11:33:43Z"
+      "syncedAt": "2026-10-17T12:44:06Z"
     },
     "cukier": {
       "title": "AH Kristalsuiker",
       "price": 129,
       "bonusPrice": null,
-      "ok": true
+      "ok": false,
+      "warning": "Apify HTTP 400: Bad Request",
+      "stale": true
     },
     "cukier_puder": {
       "title": "AH Poedersuiker",
       "price": 139,
       "bonusPrice": null,
-      "ok": true
+      "ok": false,
+      "warning": "Apify HTTP 400: Bad Request",
+      "stale": true
     },
     "czekolada": {
       "title": "AH Pure chocolade 72%",
       "price": 189,
       "bonusPrice": null,
-      "ok": true
+      "ok": false,
+      "warning": "Apify HTTP 400: Bad Request",
+      "stale": true
     },
     "jajka": {
       "title": "AH Eieren vrije uitloop M",
       "price": 299,
       "bonusPrice": null,
-      "ok": true
+      "ok": false,
+      "warning": "Apify HTTP 400: Bad Request",
+      "stale": true
     },
     "kakao": {
       "title": "AH Cacaopoeder",
       "price": 249,
       "bonusPrice": null,
-      "ok": true
+      "ok": false,
+      "warning": "Apify HTTP 400: Bad Request",
+      "stale": true
     },
     "maka": {
       "title": "AH Patentbloem",
       "price": 119,
       "bonusPrice": null,
-      "ok": true
+      "ok": false,
+      "warning": "Apify HTTP 400: Bad Request",
+      "stale": true
     },
     "masa_cukrowa": {
       "title": "BrandNewCake Fondant Glazuur Wit",
@@ -93,7 +107,7 @@
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-10-17T11:33:43Z"
+      "syncedAt": "2026-10-17T12:44:06Z"
     },
     "mascarpone": {
       "title": "AH Mascarpone",
@@ -101,13 +115,17 @@
       "bonusPrice": 164,
       "bonusUntil": "2026-10-19",
       "bonusLabel": "Bonus −25%",
-      "ok": true
+      "ok": false,
+      "warning": "Apify HTTP 400: Bad Request",
+      "stale": true
     },
     "maslanka": {
       "title": "AH Karnemelk",
       "price": 115,
       "bonusPrice": null,
-      "ok": true
+      "ok": false,
+      "warning": "Apify HTTP 400: Bad Request",
+      "stale": true
     },
     "maslo": {
       "title": "AH Roomboter ongezouten",
@@ -115,13 +133,17 @@
       "bonusPrice": 223,
       "bonusUntil": "2026-10-19",
       "bonusLabel": "Bonus −20%",
-      "ok": true
+      "ok": false,
+      "warning": "Apify HTTP 400: Bad Request",
+      "stale": true
     },
     "mleko": {
       "title": "AH Volle melk",
       "price": 119,
       "bonusPrice": null,
-      "ok": true
+      "ok": false,
+      "warning": "Apify HTTP 400: Bad Request",
+      "stale": true
     },
     "podklad_20": {
       "title": "Cakeboard Zilver Rond",
@@ -137,7 +159,7 @@
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-10-17T11:33:43Z"
+      "syncedAt": "2026-10-17T12:44:06Z"
     },
     "podklad_22": {
       "title": "Cakeboard Zilver Rond",
@@ -153,7 +175,7 @@
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-10-17T11:33:43Z"
+      "syncedAt": "2026-10-17T12:44:06Z"
     },
     "podklad_25": {
       "title": "Cakeboard Zilver Rond",
@@ -169,7 +191,7 @@
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-10-17T11:58:34Z"
+      "syncedAt": "2026-10-17T12:44:06Z"
     },
     "posypka": {
       "title": "Sprinkles World of Magic 90g",
@@ -185,7 +207,7 @@
       "inStock": true,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-10-17T11:33:43Z"
+      "syncedAt": "2026-10-17T12:44:06Z"
     },
     "pudelko_25": {
       "title": "PME Taartdoos",
@@ -201,7 +223,7 @@
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-10-17T11:33:43Z"
+      "syncedAt": "2026-10-17T12:44:06Z"
     },
     "rekawy": {
       "title": "Wilton Wegwerp Spuitzakken 12 stuks",
@@ -217,19 +239,23 @@
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-10-17T11:33:43Z"
+      "syncedAt": "2026-10-17T12:44:06Z"
     },
     "serek": {
       "title": "Philadelphia naturel",
       "price": 249,
       "bonusPrice": null,
-      "ok": true
+      "ok": false,
+      "warning": "Apify HTTP 400: Bad Request",
+      "stale": true
     },
     "smietana": {
       "title": "AH Slagroom 35%",
       "price": 149,
       "bonusPrice": null,
-      "ok": true
+      "ok": false,
+      "warning": "Apify HTTP 400: Bad Request",
+      "stale": true
     }
   }
 }
