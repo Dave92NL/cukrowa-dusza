@@ -2,3 +2,4 @@
 *.log
 .claude/settings.local.json
 .sitemap-cache.txt
+.claude/launch.json
