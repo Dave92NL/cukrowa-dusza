@@ -14,6 +14,16 @@ const SVG_CHEV = '<svg width="8" height="13" viewBox="0 0 8 13" fill="none" stro
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c =>
   ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
+/** Polska odmiana przez liczebniki: 1 tort, 2-4 torty, 5+ tortow,
+    z wyjatkiem nastki (12-14 biora forme mnoga). */
+export function plural(n, one, few, many) {
+  const a = Math.abs(n);
+  if (a === 1) return one;
+  const d = a % 10, s = a % 100;
+  return (d >= 2 && d <= 4 && !(s >= 12 && s <= 14)) ? few : many;
+}
+const ile = (n, one, few, many) => `${n} ${plural(n, one, few, many)}`;
+
 const unitLabel = u => (u === 'szt' ? 'szt' : u);
 const perLabel  = u => (u === 'szt' ? '/szt' : u === 'ml' ? '/l' : '/kg');
 
@@ -34,7 +44,9 @@ export function mountLines(calc) {
       <div class="main">
         <div class="t"><span class="nm">${esc(l.name)}</span>${l.bonus ? '<span class="tag b">Bonus</span>' : ''}${
           l.source === 'manual' ? '<span class="tag">ręcznie</span>' : ''}${
-          !l.ok && !l.missing ? '<span class="tag w">nieświeże</span>' : ''}</div>
+          l.source === 'baktotaal' ? '<span class="tag p">Baktotaal</span>' : ''}${
+          !l.ok && !l.missing ? '<span class="tag w">sprawdź</span>' : ''}${
+          l.ok && !l.synced && l.source !== 'manual' ? '<span class="tag w">cena przykładowa</span>' : ''}</div>
         <div class="s" data-line-sub="${i}"></div>
       </div>
       <div class="amt">
@@ -116,7 +128,7 @@ export function renderBonusHint(calc, useBonus) {
   const n = calc.lines.filter(l => l.bonusLabel || l.bonus).length;
   if (calc.bonusSavings > 0.5) {
     el.innerHTML = useBonus
-      ? `${n} ${n === 1 ? 'składnik' : 'składniki'} w promocji Bonus — oszczędzasz <b>${fmt(calc.bonusSavings)}</b> na tym torcie.`
+      ? `${ile(n, 'składnik', 'składniki', 'składników')} w promocji Bonus — oszczędzasz <b>${fmt(calc.bonusSavings)}</b> na tym torcie.`
       : `Liczę ceny podstawowe. Włącz Bonus, żeby zbić koszt o <b>${fmt(calc.bonusSavings)}</b>.`;
   } else {
     el.textContent = 'Żaden ze składników nie jest teraz w promocji Bonus.';
@@ -125,7 +137,9 @@ export function renderBonusHint(calc, useBonus) {
   const warn = bind('kalk-warn');
   const problems = [];
   if (calc.missing.length) problems.push(`Bez ceny: ${calc.missing.join(', ')} — te składniki NIE są doliczone.`);
-  if (calc.stale.length) problems.push(`Nieświeże ceny: ${calc.stale.join(', ')} — sprawdź w Składnikach.`);
+  if (calc.stale.length) problems.push(`Do sprawdzenia: ${calc.stale.join(', ')} — synchronizacja zgłosiła problem.`);
+  if (calc.unsynced?.length) problems.push(
+    `Ceny przykładowe (nigdy nie pobrane): ${calc.unsynced.join(', ')} — ta kalkulacja jeszcze nie jest prawdziwa.`);
   warn.hidden = problems.length === 0;
   warn.textContent = problems.join(' ');
 }
@@ -134,14 +148,14 @@ export function renderCakeHeader(recipe, calc) {
   bind('cake-name').textContent = recipe ? recipe.name || 'Bez nazwy' : '—';
   const parts = [];
   if (recipe?.diameter) parts.push(`Ø ${fmtPlain(recipe.diameter * 100).replace(',00', '')} cm`);
-  if (recipe?.slices) parts.push(`${recipe.slices} porcji`);
+  if (recipe?.slices) parts.push(ile(recipe.slices, 'porcja', 'porcje', 'porcji'));
   if (calc?.perSlice != null) parts.push(`${fmt(calc.perSlice)}/porcja`);
   bind('cake-sub').textContent = parts.join(' · ');
 }
 
 // ───────────────────── ekran: skladniki ─────────────────────
 
-export function renderSync(prices, error) {
+export function renderSync(prices, error, list) {
   const dot = bind('sync-dot'), title = bind('sync-title'), sub = bind('sync-sub');
   dot.className = 'dot';
 
@@ -151,10 +165,17 @@ export function renderSync(prices, error) {
     sub.textContent = error;
     return;
   }
+  const nigdy = (list || []).filter(i => i.ok && !i.synced).length;
   if (prices.seed || !prices.syncedAt) {
     dot.classList.add('warn');
     title.textContent = 'Ceny przykładowe';
-    sub.textContent = 'Uruchom synchronizację w GitHubie, żeby pobrać prawdziwe ceny.';
+    sub.textContent = 'Uruchom synchronizację, żeby pobrać prawdziwe ceny.';
+    return;
+  }
+  if (nigdy) {
+    dot.classList.add('warn');
+    title.textContent = `${ile(nigdy, 'cena', 'ceny', 'cen')} nigdy nie pobrano`;
+    sub.textContent = 'Reszta jest aktualna. Brakujące mają wciąż wartości przykładowe.';
     return;
   }
   const age = pricesAgeDays(prices);
@@ -173,7 +194,8 @@ export function renderSync(prices, error) {
 export function renderIngredients(list) {
   const host = bind('ingredients');
   const groups = [
-    ['Z Albert Heijn', list.filter(i => !i.manual && !i.overridden)],
+    ['Albert Heijn', list.filter(i => i.source === 'ah' && !i.overridden)],
+    ['Baktotaal', list.filter(i => i.source === 'baktotaal' && !i.overridden)],
     ['Cena wpisana ręcznie', list.filter(i => i.manual || i.overridden)],
   ];
   host.innerHTML = groups.filter(([, items]) => items.length).map(([name, items]) => `
@@ -189,7 +211,8 @@ export function renderIngredients(list) {
           <div class="main">
             <div class="t"><span class="nm">${esc(i.name)}</span>${active ? `<span class="tag b">${esc(i.bonusLabel || 'Bonus')}</span>` : ''}${
               i.overridden ? '<span class="tag">ręcznie</span>' : ''}${
-              !i.ok ? '<span class="tag w">sprawdź</span>' : ''}</div>
+              !i.ok ? '<span class="tag w">sprawdź</span>' : ''}${
+              i.ok && !i.synced ? '<span class="tag w">przykładowa</span>' : ''}</div>
             <div class="s">${esc(i.title || '')}${i.title ? ' · ' : ''}${i.pack} ${unitLabel(i.unit)} · ${price} → ${unitP}</div>
           </div>
           <span class="chev">${SVG_CHEV}</span>
@@ -197,10 +220,15 @@ export function renderIngredients(list) {
       }).join('')}
     </div>`).join('');
 
-  const bad = list.filter(i => !i.ok);
-  bind('skl-sub').textContent = bad.length
-    ? `${list.length} produktów · ${bad.length} wymaga uwagi`
-    : `${list.length} produktów · ceny z Albert Heijn`;
+  const bad = list.filter(i => !i.ok).length;
+  const nowy = list.filter(i => i.ok && !i.synced).length;
+  const uwagi = [];
+  if (bad) uwagi.push(`${bad} do sprawdzenia`);
+  if (nowy) uwagi.push(`${nowy} z ceną przykładową`);
+  const ileProd = ile(list.length, 'produkt', 'produkty', 'produktów');
+  bind('skl-sub').textContent = uwagi.length
+    ? `${ileProd} · ${uwagi.join(' · ')}`
+    : `${ileProd} · Albert Heijn i Baktotaal`;
 }
 
 // ───────────────────── ekran: torty ─────────────────────
@@ -237,7 +265,8 @@ export function renderCakes(items, activeId) {
             <div class="t"><span class="nm">${esc(it.recipe.name || 'Bez nazwy')}</span>${
               it.recipe.id === activeId ? '<span class="tag g">otwarty</span>' : ''}${
               problems ? '<span class="tag w">sprawdź ceny</span>' : ''}</div>
-            <div class="s">Ø ${it.recipe.diameter || '?'} cm · ${it.recipe.slices || '?'} porcji${
+            <div class="s">Ø ${it.recipe.diameter || '?'} cm · ${
+              it.recipe.slices ? ile(it.recipe.slices,'porcja','porcje','porcji') : '? porcji'}${
               c.perSlice != null ? ' · ' + fmt(c.perSlice) + '/porcja' : ''}</div>
           </div>
           <div class="right">
@@ -254,7 +283,7 @@ export function renderCakes(items, activeId) {
     ? ` · marża średnio ${Math.round(avg.reduce((s, i) => s + i.calc.actualMargin, 0) / avg.length * 100)}%`
     : '';
   bind('torty-sub').textContent =
-    `${items.length} ${items.length === 1 ? 'receptura' : 'receptury'}${avgTxt}${low ? ` · ${low} pod progiem marży` : ''}`;
+    `${ile(items.length, 'receptura', 'receptury', 'receptur')}${avgTxt}${low ? ` · ${low} pod progiem marży` : ''}`;
 }
 
 // ───────────────────── animacja liczb ─────────────────────

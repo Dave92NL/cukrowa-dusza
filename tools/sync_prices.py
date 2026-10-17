@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Pobiera ceny skladnikow z Albert Heijn i zapisuje docs/data/prices.json.
+"""Pobiera ceny z Albert Heijn i baktotaal.nl, zapisuje docs/data/prices.json.
+
+Dwa sklepy, dwie zupelnie rozne drogi - bo roznie sie broni ich:
 
 Dlaczego przez Apify, a nie wprost z api.ah.nl:
 AH stoi za Akamai Bot Manager. Sprawdzone na zywo - zapytanie z curla dostaje
@@ -9,6 +11,11 @@ po swojej stronie, wiec to jego problem, nie nasz.
 
 Aktor nie potrafi szukac po webshopId, ale potrafi po kodzie EAN - dlatego
 skladniki pinujemy do EAN z opakowania (patrz docs/data/catalog.json).
+
+baktotaal.nl (podklady, barwniki, opakowania, dekoracje) jest odwrotnoscia:
+zadnej ochrony antybotowej, a robots.txt pozwala na strony produktow. Wystarczy
+zwykly GET bez posrednika. Produkty pinujemy adresem strony, a nie wyszukiwaniem,
+bo robots.txt zabrania /catalogsearch/. Szczegoly w tools/baktotaal.py.
 
 Uzycie:
     export APIFY_TOKEN=apify_api_...
@@ -30,6 +37,9 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
+
+sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
+import baktotaal  # noqa: E402
 
 ACTOR = "studio-amba~albert-heijn-scraper"
 API = "https://api.apify.com/v2/acts/{actor}/run-sync-get-dataset-items"
@@ -124,7 +134,51 @@ def pick(items, entry):
     return items[0], False, "dopasowanie tylko po nazwie - potwierdz produkt"
 
 
-def fetch_one(token, key, entry):
+def source_of(entry):
+    """Zrodlo wpisu. Starsze katalogi uzywaly 'manual: true' zamiast 'source'."""
+    if entry.get("source"):
+        return entry["source"]
+    return "manual" if entry.get("manual") else "ah"
+
+
+def fetch_baktotaal(key, entry):
+    """Strona produktu -> cena brutto. Bez posrednika, bez wyszukiwania."""
+    url = entry.get("url")
+    if not url:
+        return key, {"ok": False, "warning": "brak 'url' w katalogu"}
+    try:
+        r = baktotaal.product(url)
+    except ValueError as e:
+        return key, {"ok": False, "warning": "baktotaal: %s" % e}
+
+    rec = {
+        "title": r["title"],
+        "price": r["price"],
+        "netPrice": r["netPrice"],
+        "vatRate": r["vatRate"],
+        "bonusPrice": None,
+        "bonusLabel": None,
+        "bonusUntil": None,
+        "sku": r["sku"],
+        "ean": r["ean"],
+        "url": url,
+        "inStock": r["inStock"],
+        "source": "baktotaal",
+        "ok": True,
+    }
+    # oldPrice wyzsza od biezacej to przecena - u AH nazywa sie to Bonus,
+    # wiec mapujemy na te same pola, zeby aplikacja nie musiala wiedziec,
+    # z ktorego sklepu pochodzi promocja.
+    if r["oldPrice"]:
+        rec["bonusPrice"] = r["price"]
+        rec["price"] = r["oldPrice"]
+        rec["bonusLabel"] = "Promocja"
+    if r["inStock"] is False:
+        rec["warning"] = "produkt niedostepny w sklepie"
+    return key, rec
+
+
+def fetch_ah(token, key, entry):
     """Zwraca (key, wpis do prices.json)."""
     query = entry.get("ean") or entry.get("query")
     if not query:
@@ -156,6 +210,7 @@ def fetch_one(token, key, entry):
         "url": item.get("url"),
         "scrapedUnit": item.get("unit"),
         "inStock": item.get("inStock"),
+        "source": "ah",
         "ok": True,
     }
     if not verified:
@@ -195,9 +250,6 @@ def main():
     args = ap.parse_args()
 
     token = os.environ.get("APIFY_TOKEN", "").strip()
-    if not token:
-        sys.exit("APIFY_TOKEN nie ustawiony. Token znajdziesz w Apify -> Settings -> Integrations.")
-
     catalog = load(CATALOG, None)
     if not catalog:
         sys.exit("Nie moge odczytac %s" % CATALOG)
@@ -205,7 +257,7 @@ def main():
     prev_products = previous.get("products", {})
 
     targets = {k: v for k, v in catalog.items()
-               if not k.startswith("_") and not v.get("manual")}
+               if not k.startswith("_") and source_of(v) != "manual"}
     if args.only:
         unknown = [k for k in args.only if k not in targets]
         if unknown:
@@ -215,10 +267,21 @@ def main():
     if not targets:
         sys.exit("Katalog nie zawiera skladnikow do synchronizacji.")
 
-    print("Pobieram %d skladnikow przez Apify (%s)...\n" % (len(targets), ACTOR))
+    ah = {k: v for k, v in targets.items() if source_of(v) == "ah"}
+    bt = {k: v for k, v in targets.items() if source_of(v) == "baktotaal"}
+    unknown = set(targets) - set(ah) - set(bt)
+    if unknown:
+        sys.exit("Nieznane zrodlo dla: %s" % ", ".join(sorted(unknown)))
+    if ah and not token:
+        sys.exit("APIFY_TOKEN nie ustawiony, a w katalogu sa produkty z Albert Heijn.\n"
+                 "Token znajdziesz w Apify -> Settings -> Integrations.\n"
+                 "Sama synchronizacja baktotaal: --only %s" % " ".join(sorted(bt)))
+
+    print("Pobieram %d z Albert Heijn (Apify) i %d z baktotaal.nl...\n" % (len(ah), len(bt)))
     results = {}
     with futures.ThreadPoolExecutor(max_workers=WORKERS) as pool:
-        jobs = [pool.submit(fetch_one, token, k, v) for k, v in sorted(targets.items())]
+        jobs = [pool.submit(fetch_ah, token, k, v) for k, v in sorted(ah.items())]
+        jobs += [pool.submit(fetch_baktotaal, k, v) for k, v in sorted(bt.items())]
         for job in futures.as_completed(jobs):
             key, rec = job.result()
             results[key] = rec
@@ -269,9 +332,17 @@ def main():
 
         products[key] = new
 
+    now = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+    # Znacznik czasu per produkt, nie tylko globalny. Po przebiegu z --only
+    # globalny mowilby "swieze", choc reszta cen pochodzi sprzed tygodnia albo
+    # jest wciaz przykladowa - a to dokladnie ten rodzaj cichego klamstwa,
+    # przez ktory tort zostaje wyceniony po nieaktualnych kosztach.
+    for key, rec in products.items():
+        if key in results and rec.get("ok"):
+            rec["syncedAt"] = now
     out = {
-        "syncedAt": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
-        "source": "apify/" + ACTOR,
+        "syncedAt": now,
+        "sources": {"ah": "apify/" + ACTOR, "baktotaal": baktotaal.BASE},
         "products": products,
     }
 
@@ -279,8 +350,9 @@ def main():
     if changes:
         print("Zmiany cen:")
         for key, old, new in changes:
-            print("  %-14s %s -> %6.2f EUR" % (
-                key, ("  nowy " if old is None else "%6.2f" % (old / 100)), new / 100))
+            sklep = "baktotaal" if source_of(catalog.get(key, {})) == "baktotaal" else "AH"
+            print("  %-16s %-10s %s -> %6.2f EUR" % (
+                key, sklep, ("  nowy " if old is None else "%6.2f" % (old / 100)), new / 100))
     else:
         print("Zmian cen: brak.")
 
@@ -296,7 +368,10 @@ def main():
         for key, msg in sorted(warnings):
             print("  %-14s %s" % (key, msg))
 
-    print("\nPobrano poprawnie %d z %d." % (ok_count, len(targets)))
+    ok_ah = sum(1 for k, v in products.items() if v.get("source") == "ah" and v.get("ok"))
+    ok_bt = sum(1 for k, v in products.items() if v.get("source") == "baktotaal" and v.get("ok"))
+    print("\nPobrano poprawnie %d z %d  (Albert Heijn %d/%d, baktotaal %d/%d)."
+          % (ok_count, len(targets), ok_ah, len(ah), ok_bt, len(bt)))
 
     if args.dry_run:
         print("--dry-run: nic nie zapisano.")

@@ -40,7 +40,7 @@
 
 <script type="module">
 import { fmt, fmtPlain, parseMoney, parseAmount } from './js/money.js';
-import { cakeCost, unitPrice, lineCost, bonusActive, resolveProduct,
+import { cakeCost, unitPrice, lineCost, bonusActive, resolveProduct, sourceOf,
          diameterFactor, scaleRecipe, pricesAgeDays } from './js/calc.js';
 
 const out = document.getElementById('out');
@@ -71,7 +71,40 @@ const eq = (a, b) => {
 };
 const isNull = a => { if (a !== null) throw new Error(`oczekiwano null, dostano ${JSON.stringify(a)}`); };
 
-const [catalog, prices] = await Promise.all([
+// Dane wzorcowe sa WPISANE NA STALE, nie brane z data/*.json.
+// Wczesniej testy czytaly zywe ceny i psuly sie, gdy sklep zmienil cene
+// barwnika - a wtedy czerwony ekran nie znaczy "silnik zepsuty", tylko
+// "ktos podniosl cene". Test ma sprawdzac arytmetyke, nie rynek.
+const catalog = {
+  maslo:        { name:'Masło',        source:'ah', pack:250,  unit:'g' },
+  cukier:       { name:'Cukier',       source:'ah', pack:1000, unit:'g' },
+  maka:         { name:'Mąka',         source:'ah', pack:1000, unit:'g' },
+  jajka:        { name:'Jajka',        source:'ah', pack:10,   unit:'szt' },
+  maslanka:     { name:'Maślanka',     source:'ah', pack:1000, unit:'ml' },
+  kakao:        { name:'Kakao',        source:'ah', pack:250,  unit:'g' },
+  mascarpone:   { name:'Mascarpone',   source:'ah', pack:250,  unit:'g' },
+  smietana:     { name:'Śmietana 35%', source:'ah', pack:250,  unit:'ml' },
+  cukier_puder: { name:'Cukier puder', source:'ah', pack:500,  unit:'g' },
+  barwnik:      { name:'Barwnik',      source:'manual', pack:20, unit:'g', price:219 },
+  podklad:      { name:'Podkład Ø22',  source:'baktotaal', pack:1, unit:'szt',
+                  url:'https://www.baktotaal.nl/cakeboard-zilver-rond-o22cm' },
+};
+const S = t => ({ syncedAt: t });
+const prices = { syncedAt:'2026-10-16T05:15:00Z', products: {
+  maslo:        { price:279, bonusPrice:223, bonusUntil:'2026-10-19', ok:true, source:'ah', syncedAt:'2026-10-16T05:15:00Z' },
+  cukier:       { price:129, bonusPrice:null, ok:true, source:'ah', syncedAt:'2026-10-16T05:15:00Z' },
+  maka:         { price:119, bonusPrice:null, ok:true, source:'ah', syncedAt:'2026-10-16T05:15:00Z' },
+  jajka:        { price:299, bonusPrice:null, ok:true, source:'ah', syncedAt:'2026-10-16T05:15:00Z' },
+  maslanka:     { price:115, bonusPrice:null, ok:true, source:'ah', syncedAt:'2026-10-16T05:15:00Z' },
+  kakao:        { price:249, bonusPrice:null, ok:true, source:'ah', syncedAt:'2026-10-16T05:15:00Z' },
+  mascarpone:   { price:219, bonusPrice:164, bonusUntil:'2026-10-19', ok:true, source:'ah', syncedAt:'2026-10-16T05:15:00Z' },
+  smietana:     { price:149, bonusPrice:null, ok:true, source:'ah', syncedAt:'2026-10-16T05:15:00Z' },
+  cukier_puder: { price:139, bonusPrice:null, ok:true, source:'ah', syncedAt:'2026-10-16T05:15:00Z' },
+  podklad:      { price:179, bonusPrice:null, ok:true, source:'baktotaal', syncedAt:'2026-10-16T05:15:00Z' },
+}};
+
+// Pliki z dysku sprawdzamy osobno - tylko strukturalnie, bez magicznych liczb.
+const [realCatalog, realPrices] = await Promise.all([
   fetch('./data/catalog.json').then(r => r.json()),
   fetch('./data/prices.json').then(r => r.json()),
 ]);
@@ -144,6 +177,12 @@ t('produkt ręczny (barwnik) bierze cenę z katalogu: 10,95 gr/g', () => {
   const l = zB.lines.find(x => x.key === 'barwnik');
   eq(l.source, 'manual'); near(l.unitPrice, 10.95); near(l.cost, 87.6);
 });
+t('produkt z Baktotaal liczy się na sztuki: podkład 1 szt = 1,79 €', () => {
+  const r = cakeCost({ ...RECIPE, lines:[{ key:'podklad', amount:1 }] },
+                     catalog, prices, SETTINGS, opt(true));
+  eq(r.lines[0].source, 'baktotaal');
+  near(r.lines[0].cost, 179);
+});
 
 // ───────── bezpieczeństwo: brakująca cena
 grp('Bezpieczeństwo — brak ceny NIE może dać zera');
@@ -206,25 +245,50 @@ t('wiek pliku z cenami liczony w dniach', () => {
   near(pricesAgeDays({ syncedAt:'2026-10-15T12:00:00Z' }, DAY), 2, 0.01);
 });
 t('brak syncedAt daje null', () => isNull(pricesAgeDays({ syncedAt:null }, DAY)));
-t('seed prices.json nie udaje zsynchronizowanego', () => {
-  eq(prices.seed, true); isNull(pricesAgeDays(prices, DAY));
+t('brak syncedAt na produkcie znaczy "nigdy nie pobrano"', () => {
+  const c = { x: { name:'X', source:'ah', pack:100, unit:'g' } };
+  eq(resolveProduct('x', c, { products:{ x:{ price:100, ok:true } } }).synced, false);
+  eq(resolveProduct('x', c, { products:{ x:{ price:100, ok:true,
+      syncedAt:'2026-10-16T05:15:00Z' } } }).synced, true);
 });
 
 // ───────── spójność danych
 grp('Spójność katalogu i cen');
+const realItems = Object.fromEntries(
+  Object.entries(realCatalog).filter(([k]) => !k.startsWith('_')));
+
 t('każdy nie-ręczny składnik ma cenę', () => {
-  const brak = Object.keys(catalog).filter(k =>
-    !k.startsWith('_') && !catalog[k].manual && !prices.products[k]);
+  const brak = Object.keys(realItems).filter(k =>
+    sourceOf(realItems[k]) !== 'manual' && !realPrices.products[k]);
   eq(brak, []);
 });
 t('każda cena ma wpis w katalogu', () => {
-  const sierotki = Object.keys(prices.products).filter(k => !catalog[k]);
-  eq(sierotki, []);
+  eq(Object.keys(realPrices.products).filter(k => !realItems[k]), []);
 });
 t('wszystkie jednostki to g / ml / szt', () => {
-  const zle = Object.entries(catalog).filter(([k,v]) =>
-    !k.startsWith('_') && !['g','ml','szt'].includes(v.unit)).map(([k]) => k);
-  eq(zle, []);
+  eq(Object.entries(realItems).filter(([, v]) =>
+    !['g','ml','szt'].includes(v.unit)).map(([k]) => k), []);
+});
+t('każde źródło to ah / baktotaal / manual', () => {
+  eq(Object.entries(realItems).filter(([, v]) =>
+    !['ah','baktotaal','manual'].includes(sourceOf(v))).map(([k]) => k), []);
+});
+t('każdy produkt z Baktotaal ma adres strony', () => {
+  eq(Object.entries(realItems).filter(([, v]) =>
+    sourceOf(v) === 'baktotaal' && !(v.url || '').startsWith('https://www.baktotaal.nl/'))
+    .map(([k]) => k), []);
+});
+t('żaden adres Baktotaal nie łamie robots.txt', () => {
+  eq(Object.entries(realItems).filter(([, v]) =>
+    sourceOf(v) === 'baktotaal' &&
+    ((v.url || '').includes('?') || (v.url || '').includes('/catalogsearch/')))
+    .map(([k]) => k), []);
+});
+t('ceny nigdy nie pobrane są oznaczone, a nie udają świeżych', () => {
+  const bezZnacznika = Object.entries(realPrices.products)
+    .filter(([, v]) => v.ok !== false && !v.syncedAt).map(([k]) => k);
+  const resolved = bezZnacznika.map(k => resolveProduct(k, realItems, realPrices));
+  if (resolved.some(r => r && r.synced)) throw new Error('produkt bez syncedAt udaje zsynchronizowany');
 });
 
 const sum = document.getElementById('sum');

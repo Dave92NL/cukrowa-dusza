@@ -42,8 +42,9 @@ function refreshCakes() {
 }
 
 function refreshIngredients() {
-  renderSync(state.prices, state.error);
-  renderIngredients(ingredientList(state.catalog, state.prices));
+  const list = ingredientList(state.catalog, state.prices);
+  renderSync(state.prices, state.error, list);
+  renderIngredients(list);
 }
 
 function refreshAll({ remount = true } = {}) {

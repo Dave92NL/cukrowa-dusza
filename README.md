@@ -1,6 +1,6 @@
 # cukrowa dusza
 
-Liczenie kosztu tortów z aktualnych cen Albert Heijn. Wpisujesz gramaturę,
+Liczenie kosztu tortów z aktualnych cen Albert Heijn i Baktotaal. Wpisujesz gramaturę,
 aplikacja dolicza robociznę, prąd i marżę, i podaje cenę sprzedaży oraz koszt porcji.
 
 Aplikacja webowa (PWA) dodawana do ekranu domowego iPhone'a. Bez Xcode,
@@ -22,7 +22,7 @@ docs/                    ← GitHub Pages serwuje stąd
     prices.js            ładowanie katalogu i cen
     ui.js  app.js        renderowanie i logika
   data/
-    catalog.json         Twoje składniki → produkty AH   (edytujesz ręcznie)
+    catalog.json         Twoje składniki → produkty w sklepach (edytujesz ręcznie)
     prices.json          ceny                            (pisze GitHub Actions)
   icons/napis.png        napis z logo, uzywany jako maska CSS
   sw.js                  offline + automatyczne aktualizacje
@@ -30,7 +30,10 @@ docs/                    ← GitHub Pages serwuje stąd
 brand/
   logo-zrodlo.png        logo "cukrowa dusza" - zrodlo ikon i napisu
 tools/
-  sync_prices.py         pobieranie cen przez Apify
+  sync_prices.py         pobieranie cen z obu sklepów
+  baktotaal.py           odczyt cen z baktotaal.nl
+  find_baktotaal.py      wyszukiwarka produktów w baktotaal.nl
+  catalog_keys.py        klucze katalogu wg źródła (używa workflow)
   test_sync.py           19 testów części pythonowej
   summary.py             podsumowanie przebiegu
   make_icons.py          generator ikon z logo (macOS, uzywa sips)
@@ -67,6 +70,15 @@ W GitHubie robi to codziennie workflow `Ceny Albert Heijn` (05:15 UTC), a commit
 tylko wtedy, gdy ceny faktycznie się zmieniły. Można go też odpalić ręcznie
 (`Actions` → `Run workflow`).
 
+## Dwa sklepy, dwie różne drogi
+
+| | Albert Heijn | Baktotaal |
+|---|---|---|
+| co | mąka, masło, jajka, nabiał | podkłady, barwniki, opakowania, dekoracje |
+| dostęp | przez aktora Apify | zwykły GET, bez pośrednika |
+| pinowanie | kod EAN z opakowania | adres strony produktu |
+| wymaga tokenu | tak | nie |
+
 ### Dlaczego przez Apify, a nie wprost z AH
 
 Albert Heijn nie ma publicznego API i stoi za Akamai Bot Manager. Sprawdzone na żywo:
@@ -80,6 +92,39 @@ Albert Heijn nie ma publicznego API i stoi za Akamai Bot Manager. Sprawdzone na 
 
 Własny scraper z GitHub Actions psułby się co kilka tygodni. Aktor Apify utrzymuje
 obejście po swojej stronie. Zamiana źródła to jedna stała `ACTOR` w `sync_prices.py`.
+
+### Baktotaal: brutto, nigdy netto
+
+Sklep nie ma ochrony antybotowej, a `robots.txt` pozwala na strony produktów —
+wystarczy zwykły GET. Są jednak dwie pułapki, obie obsłużone w `tools/baktotaal.py`:
+
+**Dane strukturalne JSON-LD podają raz brutto, raz netto.** Dla prostego produktu
+cena w JSON-LD to brutto (sprinkles 6,99 = 6,99), ale dla wariantu produktu
+złożonego netto (cakeboard 1,31 przy wyświetlanych 1,59 — różnica to 21% VAT).
+Branie JSON-LD wprost zaniżyłoby koszt podkładu o jedną piątą. Dlatego cena
+bierze się z `data-price-amount` głównego produktu — z tej liczby, którą sklep
+pokazuje i którą płacisz. Test `test_wariant_NIE_bierze_netto_z_json_ld`
+pilnuje, żeby ten błąd nie wrócił.
+
+**Strona zawiera ceny produktów polecanych.** Bez zakotwiczenia w głównym
+produkcie (pierwszy `input[name=product]`) łatwo odczytać cenę zupełnie
+innego towaru.
+
+Netto i stawka VAT zapisują się tylko wtedy, gdy da się je ustalić pewnie.
+Stosunek 1,00 nie znaczy „zero VAT", tylko „JSON-LD już podał brutto" — pole,
+które znaczy dwie różne rzeczy, prędzej czy później zostanie źle użyte.
+
+### Dodawanie produktów z Baktotaal
+
+Wyszukiwarki sklepu nie wolno używać (`robots.txt` zabrania `/catalogsearch/`),
+więc szukamy w sitemapie, którą sklep publikuje właśnie w tym celu:
+
+```bash
+python3 tools/find_baktotaal.py cakeboard rond 25 --ceny
+```
+
+Narzędzie wypisze adresy z cenami i gotowy wpis do wklejenia w `catalog.json`.
+Sitemapa (16 MB, 14 tys. produktów) cachuje się lokalnie na dobę.
 
 ### Pinowanie składników
 
@@ -102,6 +147,8 @@ zamiast cichego zaniżenia kosztu o 20%.
 Od ceny składnika zależy cena, po której sprzedajesz tort, więc:
 
 - skok ceny **>40%** → odrzucony jako podmiana produktu, stara cena zachowana
+- cena **nigdy nie pobrana** → produkt nie ma `syncedAt`, a aplikacja wprost pisze
+  „cena przykładowa"; po przebiegu z `--only` reszta nie udaje świeżej
 - produkt nieznaleziony → stara cena zostaje, oznaczona `ok: false`
 - awaria API albo zero wyników → **plik nie jest nadpisywany**, workflow kończy się błędem
 - brak ceny w kalkulacji → składnik liczy się jako `null`, **nigdy jako zero**,

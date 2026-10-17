@@ -1,4 +1,4 @@
-name: Ceny Albert Heijn
+name: Ceny (Albert Heijn + Baktotaal)
 
 # Dwa niezalezne automaty w tym repo:
 #   ten workflow  -> aktualizuje ceny (cron)
@@ -35,14 +35,20 @@ jobs:
       - name: Testy czesci pythonowej
         run: python3 tools/test_sync.py
 
+      # baktotaal.nl dziala bez tokenu - sprawdzamy go osobno, zeby brak
+      # tokenu Apify nie blokowal aktualizacji podkladow i barwnikow.
       - name: Pobierz ceny
         env:
           APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
           ONLY: ${{ inputs.only }}
         run: |
           if [ -z "$APIFY_TOKEN" ]; then
-            echo "::error::Brak sekretu APIFY_TOKEN (Settings -> Secrets and variables -> Actions)."
-            exit 1
+            echo "::warning::Brak sekretu APIFY_TOKEN - pomijam Albert Heijn, pobieram tylko Baktotaal."
+            ONLY=$(python3 tools/catalog_keys.py baktotaal)
+            if [ -z "$ONLY" ]; then
+              echo '::error::Brak tokenu i brak produktow Baktotaal - nie ma czego pobierac.'
+              exit 1
+            fi
           fi
           if [ -n "$ONLY" ]; then
             python3 tools/sync_prices.py --only $ONLY

@@ -1,21 +1,219 @@
 {
-  "seed": true,
-  "syncedAt": null,
-  "source": "seed",
-  "note": "Ceny przykladowe, zeby aplikacja dzialala przed pierwsza synchronizacja. Nadpisze je tools/sync_prices.py.",
+  "syncedAt": "2026-10-17T11:33:43Z",
+  "sources": {
+    "ah": "apify/studio-amba~albert-heijn-scraper",
+    "baktotaal": "https://www.baktotaal.nl"
+  },
   "products": {
-    "maslo":        { "title": "AH Roomboter ongezouten", "price": 279, "bonusPrice": 223, "bonusUntil": "2026-10-19", "bonusLabel": "Bonus −20%", "ok": true },
-    "cukier":       { "title": "AH Kristalsuiker",         "price": 129, "bonusPrice": null, "ok": true },
-    "maka":         { "title": "AH Patentbloem",           "price": 119, "bonusPrice": null, "ok": true },
-    "jajka":        { "title": "AH Eieren vrije uitloop M","price": 299, "bonusPrice": null, "ok": true },
-    "maslanka":     { "title": "AH Karnemelk",             "price": 115, "bonusPrice": null, "ok": true },
-    "kakao":        { "title": "AH Cacaopoeder",           "price": 249, "bonusPrice": null, "ok": true },
-    "mascarpone":   { "title": "AH Mascarpone",            "price": 219, "bonusPrice": 164, "bonusUntil": "2026-10-19", "bonusLabel": "Bonus −25%", "ok": true },
-    "smietana":     { "title": "AH Slagroom 35%",          "price": 149, "bonusPrice": null, "ok": true },
-    "cukier_puder": { "title": "AH Poedersuiker",          "price": 139, "bonusPrice": null, "ok": true },
-    "mleko":        { "title": "AH Volle melk",            "price": 119, "bonusPrice": null, "ok": true },
-    "czekolada":    { "title": "AH Pure chocolade 72%",    "price": 189, "bonusPrice": null, "ok": true },
-    "serek":        { "title": "Philadelphia naturel",     "price": 249, "bonusPrice": null, "ok": true },
-    "bakpoeder":    { "title": "Dr. Oetker Bakpoeder",     "price": 85,  "bonusPrice": null, "ok": true }
+    "bakpoeder": {
+      "title": "Dr. Oetker Bakpoeder",
+      "price": 85,
+      "bonusPrice": null,
+      "ok": true
+    },
+    "barwnik": {
+      "title": "RD Kleurstof ProGel 25 gram",
+      "price": 419,
+      "netPrice": 384,
+      "vatRate": 1.09,
+      "bonusPrice": null,
+      "bonusLabel": null,
+      "bonusUntil": null,
+      "sku": "RD9411",
+      "ean": null,
+      "url": "https://www.baktotaal.nl/rd-kleurstof-progel-red-25-gram",
+      "inStock": null,
+      "source": "baktotaal",
+      "ok": true,
+      "syncedAt": "2026-10-17T11:33:43Z"
+    },
+    "barwnik_czarny": {
+      "title": "RD Kleurstof ProGel 25 gram",
+      "price": 419,
+      "netPrice": 384,
+      "vatRate": 1.09,
+      "bonusPrice": null,
+      "bonusLabel": null,
+      "bonusUntil": null,
+      "sku": "RD9411",
+      "ean": null,
+      "url": "https://www.baktotaal.nl/rd-kleurstof-progel-black-25-gram",
+      "inStock": null,
+      "source": "baktotaal",
+      "ok": true,
+      "syncedAt": "2026-10-17T11:33:43Z"
+    },
+    "cukier": {
+      "title": "AH Kristalsuiker",
+      "price": 129,
+      "bonusPrice": null,
+      "ok": true
+    },
+    "cukier_puder": {
+      "title": "AH Poedersuiker",
+      "price": 139,
+      "bonusPrice": null,
+      "ok": true
+    },
+    "czekolada": {
+      "title": "AH Pure chocolade 72%",
+      "price": 189,
+      "bonusPrice": null,
+      "ok": true
+    },
+    "jajka": {
+      "title": "AH Eieren vrije uitloop M",
+      "price": 299,
+      "bonusPrice": null,
+      "ok": true
+    },
+    "kakao": {
+      "title": "AH Cacaopoeder",
+      "price": 249,
+      "bonusPrice": null,
+      "ok": true
+    },
+    "maka": {
+      "title": "AH Patentbloem",
+      "price": 119,
+      "bonusPrice": null,
+      "ok": true
+    },
+    "masa_cukrowa": {
+      "title": "BrandNewCake Fondant Glazuur Wit",
+      "price": 1398,
+      "netPrice": 1283,
+      "vatRate": 1.09,
+      "bonusPrice": null,
+      "bonusLabel": null,
+      "bonusUntil": null,
+      "sku": "BNC00057",
+      "ean": null,
+      "url": "https://www.baktotaal.nl/brandnewcake-fondant-glazuur-wit-1kg",
+      "inStock": null,
+      "source": "baktotaal",
+      "ok": true,
+      "syncedAt": "2026-10-17T11:33:43Z"
+    },
+    "mascarpone": {
+      "title": "AH Mascarpone",
+      "price": 219,
+      "bonusPrice": 164,
+      "bonusUntil": "2026-10-19",
+      "bonusLabel": "Bonus −25%",
+      "ok": true
+    },
+    "maslanka": {
+      "title": "AH Karnemelk",
+      "price": 115,
+      "bonusPrice": null,
+      "ok": true
+    },
+    "maslo": {
+      "title": "AH Roomboter ongezouten",
+      "price": 279,
+      "bonusPrice": 223,
+      "bonusUntil": "2026-10-19",
+      "bonusLabel": "Bonus −20%",
+      "ok": true
+    },
+    "mleko": {
+      "title": "AH Volle melk",
+      "price": 119,
+      "bonusPrice": null,
+      "ok": true
+    },
+    "podklad_20": {
+      "title": "Cakeboard Zilver Rond",
+      "price": 159,
+      "netPrice": 131,
+      "vatRate": 1.21,
+      "bonusPrice": null,
+      "bonusLabel": null,
+      "bonusUntil": null,
+      "sku": "CC108",
+      "ean": null,
+      "url": "https://www.baktotaal.nl/cakeboard-zilver-rond-o20cm",
+      "inStock": null,
+      "source": "baktotaal",
+      "ok": true,
+      "syncedAt": "2026-10-17T11:33:43Z"
+    },
+    "podklad_22": {
+      "title": "Cakeboard Zilver Rond",
+      "price": 179,
+      "netPrice": 164,
+      "vatRate": 1.09,
+      "bonusPrice": null,
+      "bonusLabel": null,
+      "bonusUntil": null,
+      "sku": "CC109",
+      "ean": null,
+      "url": "https://www.baktotaal.nl/cakeboard-zilver-rond-o22cm",
+      "inStock": null,
+      "source": "baktotaal",
+      "ok": true,
+      "syncedAt": "2026-10-17T11:33:43Z"
+    },
+    "posypka": {
+      "title": "Sprinkles World of Magic 90g",
+      "price": 699,
+      "netPrice": null,
+      "vatRate": null,
+      "bonusPrice": null,
+      "bonusLabel": null,
+      "bonusUntil": null,
+      "sku": "BS0729",
+      "ean": "4252022407299",
+      "url": "https://www.baktotaal.nl/sprinkles-world-of-magic-90g",
+      "inStock": true,
+      "source": "baktotaal",
+      "ok": true,
+      "syncedAt": "2026-10-17T11:33:43Z"
+    },
+    "pudelko_25": {
+      "title": "PME Taartdoos",
+      "price": 399,
+      "netPrice": 330,
+      "vatRate": 1.21,
+      "bonusPrice": null,
+      "bonusLabel": null,
+      "bonusUntil": null,
+      "sku": "CBO804",
+      "ean": null,
+      "url": "https://www.baktotaal.nl/pme-taartdoos-25x25x15cm",
+      "inStock": null,
+      "source": "baktotaal",
+      "ok": true,
+      "syncedAt": "2026-10-17T11:33:43Z"
+    },
+    "rekawy": {
+      "title": "Wilton Wegwerp Spuitzakken 12 stuks",
+      "price": 599,
+      "netPrice": 495,
+      "vatRate": 1.21,
+      "bonusPrice": null,
+      "bonusLabel": null,
+      "bonusUntil": null,
+      "sku": "03-3111",
+      "ean": null,
+      "url": "https://www.baktotaal.nl/wilton-wegwerp-spuitzakken-30cm-12-stuks",
+      "inStock": null,
+      "source": "baktotaal",
+      "ok": true,
+      "syncedAt": "2026-10-17T11:33:43Z"
+    },
+    "serek": {
+      "title": "Philadelphia naturel",
+      "price": 249,
+      "bonusPrice": null,
+      "ok": true
+    },
+    "smietana": {
+      "title": "AH Slagroom 35%",
+      "price": 149,
+      "bonusPrice": null,
+      "ok": true
+    }
   }
 }

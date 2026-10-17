@@ -2,6 +2,7 @@
 // wiec nie ma problemu CORS, ktory blokuje wolanie api.ah.nl wprost.
 
 import { getOverrides } from './store.js';
+import { sourceOf } from './calc.js';
 
 const CATALOG_URL = './data/catalog.json';
 const PRICES_URL = './data/prices.json';
@@ -47,19 +48,24 @@ export function ingredientList(catalog, prices) {
   return Object.entries(catalog)
     .map(([key, cat]) => {
       const p = (prices.products || {})[key] || {};
+      const src = sourceOf(cat);
       return {
         key,
         name: cat.name || key,
         pack: cat.pack,
         unit: cat.unit,
-        manual: !!cat.manual,
+        source: src,
+        manual: src === 'manual',
+        url: p.url || cat.url || null,
+        synced: src === 'manual' ? true : !!p.syncedAt,
+        syncedAt: p.syncedAt || null,
         title: p.title || null,
-        price: cat.manual ? (p.price ?? cat.price) : (p.price ?? null),
+        price: src === 'manual' ? (p.price ?? cat.price) : (p.price ?? null),
         bonusPrice: p.bonusPrice ?? null,
         bonusLabel: p.bonusLabel ?? null,
         bonusUntil: p.bonusUntil ?? null,
         overridden: !!p.overridden,
-        ok: cat.manual ? true : p.ok !== false && p.price != null,
+        ok: src === 'manual' ? true : p.ok !== false && p.price != null,
         warning: p.warning || null,
       };
     })

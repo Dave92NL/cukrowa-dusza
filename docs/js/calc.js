@@ -38,14 +38,22 @@ export function lineCost(amount, product, opts) {
  * aktualizuje wyłącznie cenę. Dzięki temu zmiana opakowania przez AH
  * (250 g -> 200 g) nie przechodzi po cichu.
  */
+/** Zrodlo wpisu. Starsze katalogi uzywaly 'manual: true' zamiast 'source'. */
+export function sourceOf(cat) {
+  if (!cat) return 'missing';
+  if (cat.source) return cat.source;
+  return cat.manual ? 'manual' : 'ah';
+}
+
 export function resolveProduct(key, catalog, prices) {
   const cat = catalog && catalog[key];
   if (!cat) return null;
-  const base = { key, name: cat.name, pack: cat.pack, unit: cat.unit, manual: !!cat.manual };
+  const src = sourceOf(cat);
+  const base = { key, name: cat.name, pack: cat.pack, unit: cat.unit, source: src };
 
-  if (cat.manual) {
+  if (src === 'manual') {
     return { ...base, price: cat.price ?? null, bonusPrice: null, bonusUntil: null,
-             ok: cat.price != null, source: 'manual' };
+             ok: cat.price != null, synced: true };
   }
   const p = prices && prices.products && prices.products[key];
   if (!p) return { ...base, price: null, bonusPrice: null, ok: false, source: 'missing' };
@@ -58,9 +66,13 @@ export function resolveProduct(key, catalog, prices) {
     title: p.title ?? null,
     ean: p.ean ?? null,
     sku: p.sku ?? null,
+    url: p.url ?? cat.url ?? null,
+    // Cena bez wlasnego znacznika czasu nigdy nie byla pobrana - to wciaz
+    // wartosc przykladowa i aplikacja musi to pokazac, a nie udawac swiezosc.
+    synced: !!p.syncedAt,
+    syncedAt: p.syncedAt ?? null,
     ok: p.ok !== false && p.price != null,
-    warning: p.warning ?? null,
-    source: 'ah' };
+    warning: p.warning ?? null };
 }
 
 /**
@@ -90,6 +102,7 @@ export function cakeCost(recipe, catalog, prices, settings, opts = {}) {
       bonus: product ? bonusActive(product, o.today) && o.useBonus : false,
       bonusLabel: product ? product.bonusLabel : null,
       source: product ? product.source : 'missing',
+      synced: product ? product.synced !== false : false,
       ok: !!(product && product.ok && cost != null),
       warning: product ? product.warning : null,
       missing: cost == null,
@@ -125,6 +138,7 @@ export function cakeCost(recipe, catalog, prices, settings, opts = {}) {
       ? actualMargin < settings.marginAlert : false,
     missing: lines.filter(l => l.missing).map(l => l.key),
     stale: lines.filter(l => !l.ok && !l.missing).map(l => l.key),
+    unsynced: lines.filter(l => !l.synced && !l.missing && l.source !== 'manual').map(l => l.key),
     usedBonus: o.useBonus && lines.some(l => l.bonus),
   };
 }

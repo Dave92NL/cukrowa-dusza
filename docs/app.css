@@ -11,8 +11,12 @@
   --bonus:#E11D48; --bonus-soft:rgba(225,29,72,.11);
   --good:#1D9D4E; --good-soft:rgba(29,157,78,.12);
   --warn:#B4690E; --warn-soft:rgba(180,105,14,.12);
+  --rose-ink:#A8456A; --rose-soft:rgba(168,69,106,.12);
   --chrome:rgba(247,245,240,.80);
   --scrim:rgba(0,0,0,.3);
+  /* Aplikacja jest robiona na telefon, ale ogladana bywa tez na Macu: jedna
+     szerokosc dla paska, tresci i zakladek, zeby nie rozciagala sie na cale okno. */
+  --kolumna:460px;
   color-scheme:light;
 }
 @media (prefers-color-scheme:dark){
@@ -24,6 +28,7 @@
     --bonus:#FF566F; --bonus-soft:rgba(255,86,111,.16);
     --good:#3EDC72; --good-soft:rgba(62,220,114,.16);
     --warn:#F0A830; --warn-soft:rgba(240,168,48,.16);
+    --rose-ink:#E89BB4; --rose-soft:rgba(232,155,180,.16);
     --chrome:rgba(24,22,19,.80);
     --scrim:rgba(0,0,0,.5);
     color-scheme:dark;
@@ -37,6 +42,7 @@
   --bonus:#FF566F; --bonus-soft:rgba(255,86,111,.16);
   --good:#3EDC72; --good-soft:rgba(62,220,114,.16);
   --warn:#F0A830; --warn-soft:rgba(240,168,48,.16);
+  --rose-ink:#E89BB4; --rose-soft:rgba(232,155,180,.16);
   --chrome:rgba(24,22,19,.80);
   --scrim:rgba(0,0,0,.5);
   color-scheme:dark;
@@ -55,11 +61,6 @@ body{-webkit-user-select:none;user-select:none}
 input,.selectable{-webkit-user-select:text;user-select:text}
 
 /* ───────── pasek nawigacyjny ───────── */
-/* Aplikacja jest robiona na telefon, ale ogladana bywa tez na Macu.
-   Jedna szerokosc dla paska, tresci i zakladek, zeby na szerokim ekranie
-   nie rozciagala sie na cale okno. */
-:root{--kolumna:460px}
-
 .nav{
   position:sticky;top:0;z-index:20;
   background:var(--chrome);backdrop-filter:blur(22px) saturate(180%);
@@ -149,6 +150,7 @@ main{max-width:var(--kolumna);margin-inline:auto;
 .tag.b{background:var(--bonus-soft);color:var(--bonus)}
 .tag.g{background:var(--good-soft);color:var(--good)}
 .tag.w{background:var(--warn-soft);color:var(--warn)}
+.tag.p{background:var(--rose-soft);color:var(--rose-ink)}
 .strike{text-decoration:line-through;color:var(--label-3)}
 
 /* ───────── podsumowanie kalkulacji ───────── */
