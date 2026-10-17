@@ -3,15 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
-<title>Tortownik</title>
+<title>cukrowa dusza</title>
 <meta name="description" content="Koszt tortu z aktualnych cen Albert Heijn.">
-<meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#F3F1EC" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 
 <!-- iOS nadal wymaga tych meta do pelnego ekranu po dodaniu do ekranu domowego -->
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Tortownik">
+<meta name="apple-mobile-web-app-title" content="cukrowa dusza">
 <link rel="apple-touch-icon" href="./icons/icon-180.png">
 
 <link rel="manifest" href="./manifest.webmanifest">
@@ -45,6 +45,10 @@
   <div class="eyebrow">
     <button class="navbtn" data-act="settings" type="button">Ustawienia</button>
     <button class="navbtn" data-act="new-recipe" type="button">Nowy tort</button>
+  </div>
+  <div class="brand">
+    <img src="./icons/icon-192.png" alt="" width="30" height="30">
+    <span class="wordmark" role="img" aria-label="cukrowa dusza"></span>
   </div>
   <h1>Torty</h1>
   <p class="sub" data-bind="torty-sub"></p>
@@ -209,6 +213,13 @@
     <input type="file" accept="application/json,.json" data-bind="import-input" hidden>
 
     <div class="ghead">O aplikacji</div>
+    <div class="brandblock">
+      <img src="./icons/icon-512.png" alt="Logo cukrowa dusza" width="76" height="76">
+      <div>
+        <span class="wordmark big" role="img" aria-label="cukrowa dusza"></span>
+        <div class="bs">Kalkulator kosztu tortów</div>
+      </div>
+    </div>
     <div class="group pad">
       <div class="sline"><span class="k">Wersja</span><span class="v selectable" data-bind="app-version">—</span></div>
       <div class="sline"><span class="k">Ceny z dnia</span><span class="v" data-bind="app-synced">—</span></div>

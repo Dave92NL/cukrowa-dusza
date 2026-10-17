@@ -1,41 +1,43 @@
-/* Tortownik — styl iOS. Font systemowy, bo na iPhonie to prawdziwe SF Pro:
-   ma gotowe tabele kerningu i optyczne rozmiary, ktorych zadny webfont nie zastapi. */
+/* cukrowa dusza — styl iOS. Font systemowy, bo na iPhonie to prawdziwe SF Pro:
+   ma gotowe tabele kerningu i optyczne rozmiary, ktorych zadny webfont nie zastapi.
+   Akcent to zloto z logo, ale przyciemnione: czyste #C9A227 na bieli daje kontrast
+   2,2:1, czyli ponizej normy czytelnosci. W ciemnym motywie odwrotnie - rozjasnione. */
 
 :root{
-  --ground:#F2F2F7; --card:#FFFFFF; --card-2:#F2F2F7; --card-3:#E9E9EF;
-  --label:#1C1C1E; --label-2:#6E6E78; --label-3:#A3A3AD;
-  --sep:rgba(60,60,67,.13); --sep-strong:rgba(60,60,67,.26);
-  --accent:#0093D2; --accent-soft:rgba(0,147,210,.12);
+  --ground:#F3F1EC; --card:#FFFFFF; --card-2:#F2F0EA; --card-3:#E8E5DD;
+  --label:#241F1A; --label-2:#6E675E; --label-3:#A69E93;
+  --sep:rgba(60,52,42,.14); --sep-strong:rgba(60,52,42,.26);
+  --accent:#A8801F; --accent-soft:rgba(168,128,31,.13);
   --bonus:#E11D48; --bonus-soft:rgba(225,29,72,.11);
   --good:#1D9D4E; --good-soft:rgba(29,157,78,.12);
   --warn:#B4690E; --warn-soft:rgba(180,105,14,.12);
-  --chrome:rgba(246,246,249,.78);
+  --chrome:rgba(247,245,240,.80);
   --scrim:rgba(0,0,0,.3);
   color-scheme:light;
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
-    --ground:#000000; --card:#1C1C1E; --card-2:#2C2C2E; --card-3:#3A3A3C;
-    --label:#F3F3F6; --label-2:#9B9BA3; --label-3:#6A6A72;
-    --sep:rgba(84,84,88,.45); --sep-strong:rgba(84,84,88,.65);
-    --accent:#3FBDF4; --accent-soft:rgba(63,189,244,.16);
+    --ground:#000000; --card:#1C1A17; --card-2:#2A2724; --card-3:#38342F;
+    --label:#F4F0E9; --label-2:#A09890; --label-3:#6E675F;
+    --sep:rgba(120,112,100,.45); --sep-strong:rgba(120,112,100,.65);
+    --accent:#D9B452; --accent-soft:rgba(217,180,82,.17);
     --bonus:#FF566F; --bonus-soft:rgba(255,86,111,.16);
     --good:#3EDC72; --good-soft:rgba(62,220,114,.16);
     --warn:#F0A830; --warn-soft:rgba(240,168,48,.16);
-    --chrome:rgba(22,22,24,.78);
+    --chrome:rgba(24,22,19,.80);
     --scrim:rgba(0,0,0,.5);
     color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
-  --ground:#000000; --card:#1C1C1E; --card-2:#2C2C2E; --card-3:#3A3A3C;
-  --label:#F3F3F6; --label-2:#9B9BA3; --label-3:#6A6A72;
-  --sep:rgba(84,84,88,.45); --sep-strong:rgba(84,84,88,.65);
-  --accent:#3FBDF4; --accent-soft:rgba(63,189,244,.16);
+  --ground:#000000; --card:#1C1A17; --card-2:#2A2724; --card-3:#38342F;
+  --label:#F4F0E9; --label-2:#A09890; --label-3:#6E675F;
+  --sep:rgba(120,112,100,.45); --sep-strong:rgba(120,112,100,.65);
+  --accent:#D9B452; --accent-soft:rgba(217,180,82,.17);
   --bonus:#FF566F; --bonus-soft:rgba(255,86,111,.16);
   --good:#3EDC72; --good-soft:rgba(62,220,114,.16);
   --warn:#F0A830; --warn-soft:rgba(240,168,48,.16);
-  --chrome:rgba(22,22,24,.78);
+  --chrome:rgba(24,22,19,.80);
   --scrim:rgba(0,0,0,.5);
   color-scheme:dark;
 }
@@ -53,15 +55,21 @@ body{-webkit-user-select:none;user-select:none}
 input,.selectable{-webkit-user-select:text;user-select:text}
 
 /* ───────── pasek nawigacyjny ───────── */
+/* Aplikacja jest robiona na telefon, ale ogladana bywa tez na Macu.
+   Jedna szerokosc dla paska, tresci i zakladek, zeby na szerokim ekranie
+   nie rozciagala sie na cale okno. */
+:root{--kolumna:460px}
+
 .nav{
   position:sticky;top:0;z-index:20;
   background:var(--chrome);backdrop-filter:blur(22px) saturate(180%);
   -webkit-backdrop-filter:blur(22px) saturate(180%);
-  padding:calc(env(safe-area-inset-top,0px) + 8px) 20px 8px;
+  padding:calc(env(safe-area-inset-top,0px) + 8px) 0 8px;
 }
+.nav > *{max-width:var(--kolumna);margin-inline:auto;padding-inline:20px}
 .nav .eyebrow{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:26px}
-.nav h1{margin:1px 0 0;font-size:33px;line-height:1.12;font-weight:700;letter-spacing:-.025em;text-wrap:balance}
-.nav .sub{margin:2px 0 0;font-size:13.5px;color:var(--label-2);letter-spacing:-.01em}
+.nav h1{margin:1px auto 0;font-size:33px;line-height:1.12;font-weight:700;letter-spacing:-.025em;text-wrap:balance}
+.nav .sub{margin:2px auto 0;font-size:13.5px;color:var(--label-2);letter-spacing:-.01em}
 .navbtn{
   font:inherit;font-size:16.5px;letter-spacing:-.01em;color:var(--accent);
   background:none;border:0;padding:4px 2px;cursor:pointer;display:flex;align-items:center;gap:3px;
@@ -71,8 +79,30 @@ input,.selectable{-webkit-user-select:text;user-select:text}
 .navbtn[disabled]{color:var(--label-3);opacity:1}
 .navbtn.destructive{color:var(--bonus)}
 
+/* ───────── znak marki ─────────
+   Napis jest grafika z logo, nie czcionka. Brittany Signature jest darmowa
+   wylacznie do uzytku osobistego, a repo musi byc publiczne, wiec osadzenie
+   pliku czcionki byloby redystrybucja. Grafika z logo nalezy do Dawida. */
+.brand{display:flex;align-items:center;gap:8px;margin:4px auto 2px}
+.brand img{border-radius:50%;flex:0 0 auto;display:block}
+/* Napis to maska, a nie obrazek w kolorze: jeden plik przyjmuje kolor akcentu,
+   wiec dziala w jasnym i ciemnym motywie bez drugiej wersji grafiki. */
+.wordmark{
+  display:block;aspect-ratio:891 / 228;background-color:var(--accent);
+  -webkit-mask:url(./icons/napis.png) no-repeat center/contain;
+          mask:url(./icons/napis.png) no-repeat center/contain;
+}
+.brand .wordmark{height:23px;width:90px}
+.wordmark.big{height:30px;width:117px}
+
+.brandblock{display:flex;align-items:center;gap:14px;background:var(--card);
+  border-radius:16px;padding:14px 16px;margin-bottom:4px}
+.brandblock img{border-radius:50%;flex:0 0 auto;display:block}
+.brandblock .bs{font-size:13px;color:var(--label-2);margin-top:5px}
+
 /* ───────── tresc ───────── */
-main{padding:0 16px calc(env(safe-area-inset-bottom,0px) + 96px)}
+main{max-width:var(--kolumna);margin-inline:auto;
+  padding:0 16px calc(env(safe-area-inset-bottom,0px) + 96px)}
 .screen[hidden]{display:none!important}
 
 .ghead{
@@ -178,8 +208,10 @@ main{padding:0 16px calc(env(safe-area-inset-bottom,0px) + 96px)}
   background:var(--chrome);backdrop-filter:blur(22px) saturate(180%);
   -webkit-backdrop-filter:blur(22px) saturate(180%);
   border-top:.5px solid var(--sep);display:flex;
-  padding:8px 8px calc(env(safe-area-inset-bottom,0px) + 8px);
+  padding:8px calc(50% - var(--kolumna) / 2 + 8px)
+          calc(env(safe-area-inset-bottom,0px) + 8px);
 }
+@media (max-width:460px){ .tabbar{padding-inline:8px} }
 .tabbar button{flex:1;background:none;border:0;cursor:pointer;font:inherit;display:flex;
   flex-direction:column;align-items:center;gap:3px;color:var(--label-3);padding:3px 0;min-height:44px}
 .tabbar button span{font-size:10.5px;font-weight:500;letter-spacing:-.005em}
@@ -253,6 +285,6 @@ main{padding:0 16px calc(env(safe-area-inset-bottom,0px) + 96px)}
   .nav,.tabbar{background:var(--ground);backdrop-filter:none;-webkit-backdrop-filter:none}
 }
 @media (prefers-contrast:more){
-  :root{--sep:rgba(60,60,67,.5);--sep-strong:rgba(60,60,67,.8)}
+  :root{--sep:rgba(60,52,42,.5);--sep-strong:rgba(60,52,42,.8)}
   .group,.sync{border:1px solid var(--sep-strong)}
 }

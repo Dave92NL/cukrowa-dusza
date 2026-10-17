@@ -1,4 +1,4 @@
-# Tortownik
+# cukrowa dusza
 
 Liczenie kosztu tortów z aktualnych cen Albert Heijn. Wpisujesz gramaturę,
 aplikacja dolicza robociznę, prąd i marżę, i podaje cenę sprzedaży oraz koszt porcji.
@@ -24,13 +24,17 @@ docs/                    ← GitHub Pages serwuje stąd
   data/
     catalog.json         Twoje składniki → produkty AH   (edytujesz ręcznie)
     prices.json          ceny                            (pisze GitHub Actions)
+  icons/napis.png        napis z logo, uzywany jako maska CSS
   sw.js                  offline + automatyczne aktualizacje
   tests.html             47 testów silnika, otwierasz w przeglądarce
+brand/
+  logo-zrodlo.png        logo "cukrowa dusza" - zrodlo ikon i napisu
 tools/
   sync_prices.py         pobieranie cen przez Apify
   test_sync.py           19 testów części pythonowej
   summary.py             podsumowanie przebiegu
-  make_icons.py          generator ikon
+  make_icons.py          generator ikon z logo (macOS, uzywa sips)
+  make_wordmark.py       wycina napis z logo jako PNG z przezroczystoscia
   serve.py               lokalny podgląd
 ```
 
@@ -102,6 +106,40 @@ Od ceny składnika zależy cena, po której sprzedajesz tort, więc:
 - awaria API albo zero wyników → **plik nie jest nadpisywany**, workflow kończy się błędem
 - brak ceny w kalkulacji → składnik liczy się jako `null`, **nigdy jako zero**,
   a aplikacja wyraźnie ostrzega, że nie jest doliczony
+
+## Marka
+
+Ikona i napis pochodza z `brand/logo-zrodlo.png`. Oba generatory sa odtwarzalne:
+
+```bash
+python3 tools/make_icons.py      # docs/icons/icon-*.png
+python3 tools/make_wordmark.py   # docs/icons/napis.png
+```
+
+**Dlaczego napis jest grafika, a nie czcionka.** Logo uzywa Brittany Signature,
+ktora jest darmowa wylacznie do uzytku osobistego - autor (Creatype Studio) pisze
+wprost "NO COMMERCIAL USE ALLOWED", a licencja komercyjna jest platna. Do tego
+repozytorium musi byc publiczne, wiec plik czcionki bylby publicznie do pobrania,
+czyli redystrybuowany. Napis w logo to grafika nalezaca do wlasciciela marki,
+wiec `make_wordmark.py` wycina go wprost z logo: wynik jest identyczny z logo,
+a nie "podobny", i nic nie jest redystrybuowane.
+
+Napis trafia do interfejsu jako **maska CSS**, nie jako obrazek w kolorze -
+dzieki temu jeden plik przyjmuje kolor akcentu i dziala w obu motywach.
+
+Nazwa pod ikona na ekranie domowym i tak zawsze renderuje sie fontem systemowym;
+iOS nie pozwala jej zmienic.
+
+### Kolory
+
+| | jasny | ciemny |
+|---|---|---|
+| akcent | `#A8801F` | `#D9B452` |
+
+Zloto z logo (`#C9A227`) ma na bieli kontrast 2,2:1, czyli ponizej normy
+czytelnosci - stad przyciemnienie w jasnym motywie i rozjasnienie w ciemnym.
+Czerwien ostrzezen i zielen marzy zostaja poza paleta marki: kolor, ktory mowi
+"sprawdz cene", musi odcinac sie od brandingu, a nie z nim zlewac.
 
 ## Prywatność
 

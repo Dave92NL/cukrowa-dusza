@@ -2,6 +2,9 @@
 // GitHub Pages na darmowym koncie wymaga publicznego repo, wiec wszystko,
 // co prywatne, zostaje tutaj - w IndexedDB przegladarki.
 
+// Nazwa bazy i znacznik 'app' w kopii zostaja niezmienione mimo zmiany nazwy
+// aplikacji: inna nazwa bazy osierocilaby dane na telefonie, a inny znacznik
+// odrzucilby kopie zrobione wczesniej.
 const DB_NAME = 'tortownik';
 const DB_VERSION = 1;
 
@@ -113,13 +116,14 @@ export async function exportAll() {
   const [recs, settings, overrides] = await Promise.all([
     recipes.all(), getSettings(), getOverrides(),
   ]);
-  return { app: 'tortownik', version: 1, exportedAt: new Date().toISOString(),
+  return { app: 'tortownik', brand: 'cukrowa dusza', version: 1,
+           exportedAt: new Date().toISOString(),
            recipes: recs, settings, overrides };
 }
 
 export async function importAll(data) {
   if (!data || data.app !== 'tortownik' || !Array.isArray(data.recipes)) {
-    throw new Error('To nie jest kopia zapasowa Tortownika.');
+    throw new Error('To nie jest kopia zapasowa tej aplikacji.');
   }
   for (const r of data.recipes) {
     if (r && r.id && Array.isArray(r.lines)) await recipes.put(r);

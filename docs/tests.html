@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Tortownik — testy</title>
+<title>cukrowa dusza — testy</title>
 <style>
   :root{--bg:#F2F2F7;--card:#fff;--ink:#1C1C1E;--dim:#6E6E78;--ok:#1D9D4E;--bad:#D92B45;--sep:rgba(60,60,67,.13)}
   @media(prefers-color-scheme:dark){:root{--bg:#000;--card:#1C1C1E;--ink:#F3F3F6;--dim:#9B9BA3;--ok:#3EDC72;--bad:#FF566F;--sep:rgba(84,84,88,.42)}}
@@ -28,7 +28,7 @@
 </head>
 <body>
 <div class="wrap">
-  <h1>Tortownik — testy silnika</h1>
+  <h1>cukrowa dusza — testy silnika</h1>
   <p class="lede">Sprawdza <code>calc.js</code> i <code>money.js</code> na recepturze wzorcowej. Zero narzędzi — wystarczy ta strona.</p>
   <div id="sum">uruchamiam…</div>
   <div id="out"></div>
@@ -231,7 +231,7 @@ const sum = document.getElementById('sum');
 sum.innerHTML = fail === 0
   ? `<b style="color:var(--ok)">${pass} / ${pass} przeszło</b><div style="color:var(--dim);font-size:13px;margin-top:3px">Silnik kalkulacji działa poprawnie.</div>`
   : `<b style="color:var(--bad)">${fail} z ${pass+fail} nie przeszło</b><div style="color:var(--dim);font-size:13px;margin-top:3px">Szczegóły poniżej.</div>`;
-document.title = fail === 0 ? `✓ ${pass} testów — Tortownik` : `✗ ${fail} błędów — Tortownik`;
+document.title = fail === 0 ? `✓ ${pass} testów — cukrowa dusza` : `✗ ${fail} błędów — cukrowa dusza`;
 </script>
 </body>
 </html>

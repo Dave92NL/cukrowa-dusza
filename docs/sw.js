@@ -1,12 +1,12 @@
-// Service worker. Dwa zadania: dzialanie bez zasiegu w kuchni
+// Service worker (cukrowa dusza). Dwa zadania: dzialanie bez zasiegu w kuchni
 // oraz pewnosc, ze push do GitHuba faktycznie dociera na telefon.
 //
 // Zle napisany service worker potrafi zamrozic uzytkownika na starej wersji
 // na zawsze - dlatego stale-while-revalidate zamiast cache-first,
 // skipWaiting + clients.claim, i czyszczenie starych cache przy aktywacji.
 
-const VERSION = '1.0.0';
-const CACHE = `tortownik-${VERSION}`;
+const VERSION = '1.1.0';
+const CACHE = `cukrowa-dusza-${VERSION}`;
 
 const SHELL = [
   './', './index.html', './app.css', './manifest.webmanifest',
@@ -14,6 +14,7 @@ const SHELL = [
   './js/store.js', './js/prices.js',
   './data/catalog.json', './data/prices.json',
   './icons/icon-180.png', './icons/icon-192.png', './icons/icon-512.png',
+  './icons/favicon-64.png', './icons/napis.png',
 ];
 
 self.addEventListener('install', e => {
@@ -29,7 +30,7 @@ self.addEventListener('install', e => {
 self.addEventListener('activate', e => {
   e.waitUntil((async () => {
     for (const key of await caches.keys()) {
-      if (key.startsWith('tortownik-') && key !== CACHE) await caches.delete(key);
+      if ((key.startsWith('cukrowa-dusza-') || key.startsWith('tortownik-')) && key !== CACHE) await caches.delete(key);
     }
     await self.clients.claim();
     for (const client of await self.clients.matchAll()) {
@@ -79,7 +80,7 @@ self.addEventListener('fetch', e => {
     if (fresh) return fresh;
     if (request.mode === 'navigate') {
       return (await cache.match('./index.html')) ||
-             new Response('Tortownik jest offline i nie ma jeszcze kopii w pamięci.',
+             new Response('Aplikacja jest offline i nie ma jeszcze kopii w pamięci.',
                           { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
     }
     return new Response('', { status: 504 });

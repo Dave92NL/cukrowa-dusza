@@ -269,13 +269,13 @@ const actions = {
 
   export: async () => {
     const data = await store.exportAll();
-    const name = `tortownik-${new Date().toISOString().slice(0, 10)}.json`;
+    const name = `cukrowa-dusza-${new Date().toISOString().slice(0, 10)}.json`;
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     // Na iPhonie share sheet pozwala zapisac do Plikow lub iCloud Drive.
     try {
       const file = new File([blob], name, { type: 'application/json' });
       if (navigator.canShare?.({ files: [file] })) {
-        await navigator.share({ files: [file], title: 'Kopia Tortownika' });
+        await navigator.share({ files: [file], title: 'Kopia — cukrowa dusza' });
         return;
       }
     } catch (e) {

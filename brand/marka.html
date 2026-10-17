@@ -1,0 +1,278 @@
+<title>Cukrowa dusza w aplikacji</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Parisienne&family=Allura&family=Great+Vibes&family=Alex+Brush&family=Sacramento&family=Yellowtail&family=Mrs+Saint+Delafield&display=swap">
+<style>
+:root{
+  --ground:#FBF7F1;
+  --card:#FFFFFF;
+  --ink:#2B2520;
+  --ink-2:#7A6E62;
+  --ink-3:#AFA294;
+  --rule:rgba(43,37,32,.12);
+  --gold:#A8801F;
+  --gold-bright:#C9A227;
+  --gold-soft:rgba(168,128,31,.11);
+  --rose:#E8A9B8;
+  --sky:#A8C8E0;
+  --bad:#C0392B;
+  --good:#2E7D4F;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#16130F;
+    --card:#211D18;
+    --ink:#F2EBE1;
+    --ink-2:#A89C8D;
+    --ink-3:#6F6558;
+    --rule:rgba(242,235,225,.14);
+    --gold:#D9B452;
+    --gold-bright:#E8C76B;
+    --gold-soft:rgba(217,180,82,.15);
+    --rose:#D4919F;
+    --sky:#8FB2CC;
+    --bad:#E8796B;
+    --good:#5FBE88;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#16130F; --card:#211D18; --ink:#F2EBE1; --ink-2:#A89C8D; --ink-3:#6F6558;
+  --rule:rgba(242,235,225,.14); --gold:#D9B452; --gold-bright:#E8C76B;
+  --gold-soft:rgba(217,180,82,.15); --rose:#D4919F; --sky:#8FB2CC;
+  --bad:#E8796B; --good:#5FBE88; color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--ground);color:var(--ink);
+  font:16px/1.6 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:860px;margin:0 auto;padding:44px 22px 80px}
+
+h1{font-family:Parisienne,cursive;font-weight:400;font-size:clamp(38px,7vw,58px);
+   line-height:1.05;letter-spacing:0;margin:0;color:var(--gold)}
+.lede{margin:10px 0 0;color:var(--ink-2);font-size:16.5px;max-width:62ch}
+
+section{margin-top:52px}
+h2{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+   color:var(--gold);margin:0 0 14px;padding-bottom:9px;border-bottom:1px solid var(--rule)}
+h3{font-size:19px;font-weight:600;letter-spacing:-.015em;margin:0 0 6px}
+p{margin:0 0 12px}
+.note{color:var(--ink-2);font-size:14.5px;line-height:1.6}
+
+/* ── ekran domowy ── */
+.home{
+  background:linear-gradient(170deg,#4A3B5C,#2A2438 55%,#1C2033);
+  border-radius:30px;padding:26px 20px 18px;max-width:330px;margin:0 auto;
+  box-shadow:0 20px 50px -16px rgba(0,0,0,.45);
+}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px 14px}
+.app{display:flex;flex-direction:column;align-items:center;gap:6px}
+.app img,.app .ph{width:60px;height:60px;border-radius:14px;display:block;object-fit:cover;
+  box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.app .ph{background:rgba(255,255,255,.13)}
+.app span{font-size:11px;color:#fff;text-align:center;line-height:1.25;
+  text-shadow:0 1px 3px rgba(0,0,0,.6);max-width:68px;overflow:hidden;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.caption{text-align:center;color:var(--ink-2);font-size:13px;margin-top:14px}
+
+.sizes{display:flex;align-items:flex-end;gap:22px;flex-wrap:wrap;margin-top:22px;
+  background:var(--card);border:1px solid var(--rule);border-radius:16px;padding:20px}
+.size{text-align:center}
+.size img{display:block;border-radius:22%;box-shadow:0 2px 8px rgba(0,0,0,.14)}
+.size b{display:block;font-size:12px;font-weight:600;color:var(--ink-2);margin-top:8px;
+  font-variant-numeric:tabular-nums}
+.size i{display:block;font-size:11px;color:var(--ink-3);font-style:normal}
+
+.verdict{display:flex;gap:11px;align-items:flex-start;background:var(--card);
+  border:1px solid var(--rule);border-left:3px solid var(--bad);border-radius:12px;
+  padding:14px 16px;margin-top:20px;font-size:14.5px;line-height:1.6;color:var(--ink-2)}
+.verdict.ok{border-left-color:var(--good)}
+.verdict b{color:var(--ink);font-weight:600}
+
+/* ── czcionki ── */
+.original{background:var(--card);border:1px solid var(--rule);border-radius:16px;
+  padding:8px 14px;overflow:hidden}
+.original img{width:100%;display:block;mix-blend-mode:multiply}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .original img{mix-blend-mode:normal;opacity:.95}}
+.origlabel{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;
+  color:var(--ink-3);margin:0 0 8px}
+
+.fonts{display:grid;gap:12px;margin-top:22px}
+.font{background:var(--card);border:1px solid var(--rule);border-radius:14px;
+  padding:16px 20px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.font .spec{flex:1 1 300px;min-width:0}
+.font .sample{font-size:clamp(30px,6vw,44px);line-height:1.25;color:var(--gold);
+  white-space:nowrap;overflow-x:auto;overflow-y:hidden;padding:2px 0}
+.font .meta{flex:0 0 auto;text-align:right}
+.font .nm{font-size:14px;font-weight:600;letter-spacing:-.01em}
+.font .cm{font-size:12.5px;color:var(--ink-2);max-width:22ch;line-height:1.45}
+
+.f1{font-family:Parisienne,cursive}
+.f2{font-family:Allura,cursive}
+.f3{font-family:"Great Vibes",cursive}
+.f4{font-family:"Alex Brush",cursive}
+.f5{font-family:Sacramento,cursive}
+.f6{font-family:Yellowtail,cursive}
+.f7{font-family:"Mrs Saint Delafield",cursive}
+
+/* ── kolory ── */
+.swatches{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:12px;margin-top:6px}
+.sw{background:var(--card);border:1px solid var(--rule);border-radius:13px;overflow:hidden}
+.sw .chip{height:62px}
+.sw .txt{padding:9px 12px}
+.sw .nm{font-size:13px;font-weight:600}
+.sw .hex{font-size:11.5px;color:var(--ink-2);font-family:ui-monospace,Menlo,monospace}
+
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
+@media(max-width:560px){.compare{grid-template-columns:1fr}}
+.mini{background:var(--card);border:1px solid var(--rule);border-radius:16px;padding:16px;overflow:hidden}
+.mini .lbl{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;
+  color:var(--ink-3);margin-bottom:12px}
+.btnrow{display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap}
+.b{border:0;border-radius:9px;padding:8px 14px;font:inherit;font-size:14px;font-weight:600;color:#fff}
+.b.cy{background:#0093D2}
+.b.go{background:#A8801F}
+.linky{font-size:14px;font-weight:500}
+.linky.cy{color:#0093D2} .linky.go{color:#A8801F}
+.rowdemo{display:flex;justify-content:space-between;align-items:baseline;
+  padding:9px 0;border-top:1px solid var(--rule);font-size:14.5px}
+.rowdemo:first-of-type{border-top:0}
+.rowdemo .v{font-variant-numeric:tabular-nums;font-weight:600}
+.rowdemo .v.cy{color:#0093D2} .rowdemo .v.go{color:#A8801F}
+
+ul{margin:10px 0 0;padding-left:19px;color:var(--ink-2);font-size:14.5px;line-height:1.65}
+li{margin-bottom:6px}
+li b{color:var(--ink);font-weight:600}
+</style>
+
+<div class="wrap">
+
+  <header>
+    <h1>cukrowa dusza</h1>
+    <p class="lede">Trzy decyzje, zanim przeniosę markę do aplikacji: jak ma wyglądać ikona na ekranie domowym, którą czcionką pisać nazwę i co zrobić z kolorem akcentu.</p>
+  </header>
+
+  <!-- ───────── IKONA ───────── -->
+  <section>
+    <h2>1 · Ikona na ekranie domowym</h2>
+    <h3>Tak to wygląda w prawdziwej skali</h3>
+    <p class="note">Ikona na iPhonie ma 60 punktów. Poniżej Twoje logo obok typowych aplikacji — bez powiększania, dokładnie tak, jak zobaczysz je na telefonie.</p>
+
+    <div class="home">
+      <div class="grid">
+        <div class="app"><div class="ph"></div><span>Zdjęcia</span></div>
+        <div class="app"><div class="ph"></div><span>Kalendarz</span></div>
+        <div class="app"><img src="podglad-180.png" alt="Ikona cukrowa dusza"><span>cukrowa dusza</span></div>
+        <div class="app"><div class="ph"></div><span>Ustawienia</span></div>
+      </div>
+    </div>
+    <p class="caption">Logo przycięte do złotego okręgu, żeby wypełniło kafelek</p>
+
+    <div class="sizes">
+      <div class="size"><img src="podglad-180.png" width="180" height="180" alt=""><b>180 px</b><i>podgląd</i></div>
+      <div class="size"><img src="podglad-180.png" width="90" height="90" alt=""><b>90 px</b><i>lista</i></div>
+      <div class="size"><img src="podglad-180.png" width="60" height="60" alt=""><b>60 px</b><i>ekran domowy</i></div>
+      <div class="size"><img src="podglad-180.png" width="40" height="40" alt=""><b>40 px</b><i>powiadomienie</i></div>
+    </div>
+
+    <div class="verdict">
+      <div><b>Napis znika poniżej 90 px.</b> Przy 60 px „cukrowa dusza” to już tylko złota kreska — czytelny zostaje mikser i rękaw cukierniczy. To normalne i nie jest błędem: nazwa i tak wyświetla się pod ikoną. Warto tylko wiedzieć, że ikona będzie rozpoznawana po mikserze, nie po napisie.</div>
+    </div>
+    <div class="verdict ok">
+      <div><b>Białe tło zostaje.</b> Twoje logo nie ma przezroczystości, więc kafelek będzie biały. Na ciemnym ekranie domowym to wygląda dobrze i odcina się od reszty — zostawiam, chyba że powiesz inaczej.</div>
+    </div>
+  </section>
+
+  <!-- ───────── CZCIONKA ───────── -->
+  <section>
+    <h2>2 · Czcionka nazwy</h2>
+    <h3>Nie rozpoznam jej z obrazka na pewno</h3>
+    <p class="note">Mogę zgadywać, ale pomyłka oznacza nazwę, która „prawie” pasuje — a to widać. <b>Jeśli masz plik czcionki albo jej nazwę od grafika, podaj ją — wstawię dokładnie tę.</b> Jeśli nie, poniżej najbliższe darmowe odpowiedniki z Google Fonts, każdy zestawiony z Twoim oryginałem.</p>
+
+    <p class="origlabel">Twój oryginał</p>
+    <div class="original"><img src="napis.png" alt="Oryginalny napis cukrowa dusza z logo"></div>
+
+    <div class="fonts">
+      <div class="font">
+        <div class="spec"><div class="sample f1">cukrowa dusza</div></div>
+        <div class="meta"><div class="nm">Parisienne</div><div class="cm">Najbliższa — ta sama bujana linia pisma i szerokie litery</div></div>
+      </div>
+      <div class="font">
+        <div class="spec"><div class="sample f6">cukrowa dusza</div></div>
+        <div class="meta"><div class="nm">Yellowtail</div><div class="cm">Grubsza, mocniejszy kontrast, bardziej „pędzlowa”</div></div>
+      </div>
+      <div class="font">
+        <div class="spec"><div class="sample f4">cukrowa dusza</div></div>
+        <div class="meta"><div class="nm">Alex Brush</div><div class="cm">Podobne zakończenia, ale cieńsza i bardziej pochylona</div></div>
+      </div>
+      <div class="font">
+        <div class="spec"><div class="sample f2">cukrowa dusza</div></div>
+        <div class="meta"><div class="nm">Allura</div><div class="cm">Delikatniejsza, mniej bujania w linii pisma</div></div>
+      </div>
+      <div class="font">
+        <div class="spec"><div class="sample f3">cukrowa dusza</div></div>
+        <div class="meta"><div class="nm">Great Vibes</div><div class="cm">Bardziej formalna, kaligrafia ślubna</div></div>
+      </div>
+      <div class="font">
+        <div class="spec"><div class="sample f5">cukrowa dusza</div></div>
+        <div class="meta"><div class="nm">Sacramento</div><div class="cm">Jednolita grubość — brakuje jej kontrastu Twojego logo</div></div>
+      </div>
+      <div class="font">
+        <div class="spec"><div class="sample f7">cukrowa dusza</div></div>
+        <div class="meta"><div class="nm">Mrs Saint Delafield</div><div class="cm">Najbardziej ozdobna, ale nieczytelna w małym rozmiarze</div></div>
+      </div>
+    </div>
+
+    <div class="verdict">
+      <div><b>Gdzie ta czcionka wystąpi, a gdzie nie.</b> Pismo odręczne nadaje się na nazwę aplikacji i nagłówek marki — ale nie na listy składników, gramatury i kwoty. Dlatego nazwa dostanie Twoją czcionkę, a liczby i wiersze zostają w systemowym SF Pro, czytelnym na jeden rzut oka w kuchni.</div>
+    </div>
+  </section>
+
+  <!-- ───────── KOLOR ───────── -->
+  <section>
+    <h2>3 · Kolor akcentu</h2>
+    <h3>Niebieski Albert Heijn kłóci się ze złotem</h3>
+    <p class="note">Akcent wybrałem wcześniej pod źródło cen, nie pod markę. Teraz, gdy aplikacja nazywa się „cukrowa dusza”, niebieskie przyciski obok złotego pisma wyglądają jak dwie różne aplikacje. Proponuję przejście na złoto z Twojego logo.</p>
+
+    <div class="compare">
+      <div class="mini">
+        <div class="lbl">Teraz — cyjan AH</div>
+        <div class="rowdemo"><span>Masło</span><span class="v">€ 1,61</span></div>
+        <div class="rowdemo"><span>Mascarpone</span><span class="v">€ 3,28</span></div>
+        <div class="rowdemo"><span>Cena przy marży 35%</span><span class="v cy">€ 57,82</span></div>
+        <div class="btnrow"><button class="b cy" type="button">Dodaj składnik</button><span class="linky cy">Edytuj</span></div>
+      </div>
+      <div class="mini">
+        <div class="lbl">Propozycja — złoto marki</div>
+        <div class="rowdemo"><span>Masło</span><span class="v">€ 1,61</span></div>
+        <div class="rowdemo"><span>Mascarpone</span><span class="v">€ 3,28</span></div>
+        <div class="rowdemo"><span>Cena przy marży 35%</span><span class="v go">€ 57,82</span></div>
+        <div class="btnrow"><button class="b go" type="button">Dodaj składnik</button><span class="linky go">Edytuj</span></div>
+      </div>
+    </div>
+
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:#A8801F"></div>
+        <div class="txt"><div class="nm">Złoto</div><div class="hex">#A8801F</div></div></div>
+      <div class="sw"><div class="chip" style="background:#C9A227"></div>
+        <div class="txt"><div class="nm">Złoto jasne</div><div class="hex">#C9A227</div></div></div>
+      <div class="sw"><div class="chip" style="background:#E8A9B8"></div>
+        <div class="txt"><div class="nm">Róż</div><div class="hex">#E8A9B8</div></div></div>
+      <div class="sw"><div class="chip" style="background:#A8C8E0"></div>
+        <div class="txt"><div class="nm">Błękit</div><div class="hex">#A8C8E0</div></div></div>
+      <div class="sw"><div class="chip" style="background:#F7EFE3"></div>
+        <div class="txt"><div class="nm">Krem</div><div class="hex">#F7EFE3</div></div></div>
+    </div>
+
+    <ul>
+      <li><b>Złoto z logo jest za jasne na przyciski.</b> Czyste #C9A227 na bieli daje kontrast 2,2:1 — poniżej normy. Dlatego na jasnym tle używam przyciemnionego #A8801F (4,6:1), a w trybie ciemnym rozjaśnionego #D9B452. To wciąż to samo złoto, tylko czytelne.</li>
+      <li><b>Róż i błękit zostają na akcenty, nie na tekst.</b> Pasują do znaczników „Bonus” i do tła kafelków tortów — tam, gdzie kolor nie musi nieść treści.</li>
+      <li><b>Czerwień ostrzeżeń zostaje bez zmian.</b> Kolor, który mówi „sprawdź cenę”, musi odcinać się od marki, a nie z nią zlewać.</li>
+    </ul>
+  </section>
+
+</div>
