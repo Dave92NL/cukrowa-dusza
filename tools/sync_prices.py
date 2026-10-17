@@ -298,7 +298,13 @@ def main():
     # ── zabezpieczenia: stara cena jest lepsza niz zla cena ──
     ok_count = sum(1 for r in results.values() if r.get("ok"))
     if ok_count == 0:
-        sys.exit("\nBLAD: zadna cena nie zostala pobrana. Nie nadpisuje %s." % os.path.basename(PRICES))
+        # Powody wypisujemy PRZED przerwaniem. Wczesniej skrypt konczyl sie
+        # samym "zadna cena nie zostala pobrana", czyli milczal dokladnie
+        # wtedy, gdy diagnoza byla najbardziej potrzebna.
+        print("Nie udalo sie pobrac zadnej ceny. Powody:")
+        for key, rec in sorted(results.items()):
+            print("  %-16s %s" % (key, rec.get("warning", "nieznany blad")))
+        sys.exit("\nNie nadpisuje %s - stare ceny zostaja." % os.path.basename(PRICES))
 
     products, changes, warnings = {}, [], []
     for key in sorted(set(list(prev_products) + list(results))):
