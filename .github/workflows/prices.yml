@@ -1,0 +1,68 @@
+name: Ceny Albert Heijn
+
+# Dwa niezalezne automaty w tym repo:
+#   ten workflow  -> aktualizuje ceny (cron)
+#   GitHub Pages  -> wdraza aplikacje przy kazdym pushu (bez workflow)
+# Awaria jednego nie blokuje drugiego.
+
+on:
+  schedule:
+    # 05:15 UTC = 06:15 zima / 07:15 latem w NL. Gotowe przed poranna praca.
+    - cron: "15 5 * * *"
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "Tylko wybrane skladniki, oddzielone spacja (puste = wszystkie)"
+        required: false
+        type: string
+
+# Zapobiega nakladaniu sie przebiegow, gdyby cron spotkal reczne uruchomienie.
+concurrency:
+  group: ceny
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Skrypty korzystaja wylacznie z biblioteki standardowej Pythona.
+      # Nie ma zaleznosci do instalowania ani lockfile'a do pilnowania.
+      - name: Testy czesci pythonowej
+        run: python3 tools/test_sync.py
+
+      - name: Pobierz ceny
+        env:
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+          ONLY: ${{ inputs.only }}
+        run: |
+          if [ -z "$APIFY_TOKEN" ]; then
+            echo "::error::Brak sekretu APIFY_TOKEN (Settings -> Secrets and variables -> Actions)."
+            exit 1
+          fi
+          if [ -n "$ONLY" ]; then
+            python3 tools/sync_prices.py --only $ONLY
+          else
+            python3 tools/sync_prices.py
+          fi
+
+      - name: Commituj tylko gdy ceny sie zmienily
+        run: |
+          if git diff --quiet -- docs/data/prices.json; then
+            echo "Ceny bez zmian - nie tworze commita."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/data/prices.json
+          git commit -m "Ceny AH $(date -u +%Y-%m-%d)"
+          git push
+
+      # Ostrzezenia widoczne w podsumowaniu przebiegu, bez grzebania w logach.
+      - name: Podsumowanie
+        if: always()
+        run: python3 tools/summary.py >> "$GITHUB_STEP_SUMMARY"
