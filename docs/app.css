@@ -11,7 +11,6 @@
   --bonus:#E11D48; --bonus-soft:rgba(225,29,72,.11);
   --good:#1D9D4E; --good-soft:rgba(29,157,78,.12);
   --warn:#B4690E; --warn-soft:rgba(180,105,14,.12);
-  --rose-ink:#A8456A; --rose-soft:rgba(168,69,106,.12);
   --chrome:rgba(247,245,240,.80);
   --scrim:rgba(0,0,0,.3);
   /* Aplikacja jest robiona na telefon, ale ogladana bywa tez na Macu: jedna
@@ -28,7 +27,6 @@
     --bonus:#FF566F; --bonus-soft:rgba(255,86,111,.16);
     --good:#3EDC72; --good-soft:rgba(62,220,114,.16);
     --warn:#F0A830; --warn-soft:rgba(240,168,48,.16);
-    --rose-ink:#E89BB4; --rose-soft:rgba(232,155,180,.16);
     --chrome:rgba(24,22,19,.80);
     --scrim:rgba(0,0,0,.5);
     color-scheme:dark;
@@ -42,7 +40,6 @@
   --bonus:#FF566F; --bonus-soft:rgba(255,86,111,.16);
   --good:#3EDC72; --good-soft:rgba(62,220,114,.16);
   --warn:#F0A830; --warn-soft:rgba(240,168,48,.16);
-  --rose-ink:#E89BB4; --rose-soft:rgba(232,155,180,.16);
   --chrome:rgba(24,22,19,.80);
   --scrim:rgba(0,0,0,.5);
   color-scheme:dark;
@@ -122,8 +119,26 @@ main{max-width:var(--kolumna);margin-inline:auto;
 .row .main{flex:1 1 auto;min-width:0}
 .row .t{font-size:16px;letter-spacing:-.012em;display:flex;align-items:center;min-width:0}
 /* Skraca sie nazwa, nie znacznik - inaczej "Mascarpone BONUS" gubi wlasnie Bonus. */
-.nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+/* Nazwa zajmuje wolne miejsce i sciaga sie wielokropkiem. Sztywna podloga
+   min-width tu NIE dziala: przy bardzo waskim wierszu nazwa wylewala sie
+   poza niego. Zamiast tego dlugie opisy trzymamy w drugiej linii. */
+.nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:3em;flex:0 1 auto}
 .row .s{font-size:12.5px;color:var(--label-2);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ───────── wiersz kalkulatora: nazwa u gory, pole i koszt pod spodem ─────────
+   Uklad poziomy sciskal nazwe miedzy znacznik a pole gramatury - na iPhonie
+   zostawala z niej jedna litera. W pionie nazwa ma cala szerokosc wiersza. */
+.line{padding:10px 14px 11px;border-top:.5px solid var(--sep)}
+.line:first-child{border-top:0}
+.line .t{display:flex;align-items:center;gap:0;min-width:0;
+  font-size:16px;letter-spacing:-.012em}
+.line .s{font-size:12.5px;color:var(--label-2);margin-top:2px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.line .ctrl{display:flex;align-items:center;justify-content:space-between;
+  gap:12px;margin-top:7px}
+.line .cost{min-width:0;text-align:right;font-size:17px;font-weight:600;
+  font-variant-numeric:tabular-nums;letter-spacing:-.015em}
+.line .amt input{width:72px;font-size:17px}
 .row .val{font-size:16px;color:var(--label-2);font-variant-numeric:tabular-nums;letter-spacing:-.01em;flex:0 0 auto}
 .chev{flex:0 0 auto;color:var(--label-3);display:flex}
 
@@ -144,13 +159,16 @@ main{max-width:var(--kolumna);margin-inline:auto;
 .cost.isMissing{color:var(--warn);font-weight:500;font-size:13px}
 
 /* ───────── znaczniki ───────── */
-.tag{display:inline-flex;align-items:center;flex:0 0 auto;font-size:10.5px;font-weight:700;letter-spacing:.03em;
+/* Znaczniki nie sciagaja sie: ucieta plakietka wyglada jak blad. Nazwa ma
+   wlasna linie, wiec jest dla nich miejsce, a w razie czego to nazwa
+   skraca sie wielokropkiem - i to czyta sie normalnie. */
+.tag{display:inline-flex;align-items:center;flex:0 0 auto;white-space:nowrap;
+  font-size:10.5px;font-weight:700;letter-spacing:.03em;
   text-transform:uppercase;padding:1.5px 5px;border-radius:5px;margin-left:6px;vertical-align:middle;
   background:var(--accent-soft);color:var(--accent);white-space:nowrap}
 .tag.b{background:var(--bonus-soft);color:var(--bonus)}
 .tag.g{background:var(--good-soft);color:var(--good)}
 .tag.w{background:var(--warn-soft);color:var(--warn)}
-.tag.p{background:var(--rose-soft);color:var(--rose-ink)}
 .strike{text-decoration:line-through;color:var(--label-3)}
 
 /* ───────── podsumowanie kalkulacji ───────── */

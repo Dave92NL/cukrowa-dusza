@@ -40,22 +40,22 @@ function perUnit(unitPrice, unit) {
 export function mountLines(calc) {
   const host = bind('lines');
   host.innerHTML = calc.lines.map((l, i) => `
-    <div class="row" data-line="${i}">
-      <div class="main">
-        <div class="t"><span class="nm">${esc(l.name)}</span>${l.bonus ? '<span class="tag b">Bonus</span>' : ''}${
-          l.source === 'manual' ? '<span class="tag">ręcznie</span>' : ''}${
-          l.source === 'baktotaal' ? '<span class="tag p">Baktotaal</span>' : ''}${
-          !l.ok && !l.missing ? '<span class="tag w">sprawdź</span>' : ''}${
-          l.ok && !l.synced && l.source !== 'manual' ? '<span class="tag w">cena przykładowa</span>' : ''}</div>
-        <div class="s" data-line-sub="${i}"></div>
+    <div class="line" data-line="${i}">
+      <div class="t"><span class="nm">${esc(l.name)}</span>${
+        l.bonus ? '<span class="tag b">Bonus</span>' : ''}${
+        l.source === 'manual' ? '<span class="tag">ręcznie</span>' : ''}${
+        !l.ok && !l.missing ? '<span class="tag w">sprawdź</span>' : ''}${
+        l.ok && !l.synced && l.source !== 'manual' ? '<span class="tag w">przykładowa</span>' : ''}</div>
+      <div class="s" data-line-sub="${i}"></div>
+      <div class="ctrl">
+        <div class="amt">
+          <input type="text" inputmode="decimal" enterkeyhint="done"
+                 value="${l.amount}" data-amount="${i}"
+                 aria-label="Zużycie: ${esc(l.name)}">
+          <span class="u">${unitLabel(l.unit) || ''}</span>
+        </div>
+        <div class="cost" data-cost="${i}"></div>
       </div>
-      <div class="amt">
-        <input type="text" inputmode="decimal" enterkeyhint="done"
-               value="${l.amount}" data-amount="${i}"
-               aria-label="Zużycie: ${esc(l.name)}">
-        <span class="u">${unitLabel(l.unit) || ''}</span>
-      </div>
-      <div class="cost" data-cost="${i}"></div>
     </div>`).join('') || `
     <div class="empty">
       <h3>Brak składników</h3>
