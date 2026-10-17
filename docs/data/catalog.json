@@ -1,0 +1,33 @@
+{
+  "_opis": [
+    "Katalog Twoich skladnikow. To TY jestes zrodlem prawdy dla gramatury opakowania",
+    "i jednostki - synchronizacja aktualizuje wylacznie cene. Dzieki temu zmiana",
+    "opakowania przez AH (250 g -> 200 g) nie przechodzi po cichu.",
+    "",
+    "Pinowanie produktu, w kolejnosci preferencji:",
+    "  ean   - kod kreskowy z opakowania (8-14 cyfr). Najpewniejsze. Zeskanuj telefonem.",
+    "  query - nazwa szukana w AH. Dziala, ale wynik jest oznaczany jako niepotwierdzony,",
+    "          dopoki nie dopiszesz 'sku' (ID produktu AH) albo 'ean'.",
+    "  manual: true - produkt poza AH, cene wpisujesz sam i nic jej nie nadpisze.",
+    "",
+    "Jednostki bazowe: g, ml, szt. 'pack' zawsze w jednostce bazowej.",
+    "Ceny zawsze w GROSZACH jako liczby calkowite (2,79 EUR = 279)."
+  ],
+
+  "maslo":         { "name": "Masło",            "query": "ah roomboter ongezouten", "pack": 250,  "unit": "g" },
+  "cukier":        { "name": "Cukier",           "query": "ah kristalsuiker",        "pack": 1000, "unit": "g" },
+  "maka":          { "name": "Mąka",             "query": "ah patentbloem",          "pack": 1000, "unit": "g" },
+  "jajka":         { "name": "Jajka",            "query": "ah eieren vrije uitloop middel", "pack": 10, "unit": "szt" },
+  "maslanka":      { "name": "Maślanka",         "query": "ah karnemelk",            "pack": 1000, "unit": "ml" },
+  "kakao":         { "name": "Kakao",            "query": "ah cacaopoeder",          "pack": 250,  "unit": "g" },
+  "mascarpone":    { "name": "Mascarpone",       "query": "ah mascarpone",           "pack": 250,  "unit": "g" },
+  "smietana":      { "name": "Śmietana 35%",     "query": "ah slagroom",             "pack": 250,  "unit": "ml" },
+  "cukier_puder":  { "name": "Cukier puder",     "query": "ah poedersuiker",         "pack": 500,  "unit": "g" },
+  "mleko":         { "name": "Mleko",            "query": "ah volle melk",           "pack": 1000, "unit": "ml" },
+  "czekolada":     { "name": "Czekolada gorzka", "query": "ah pure chocolade",       "pack": 200,  "unit": "g" },
+  "serek":         { "name": "Serek śmietankowy","query": "philadelphia naturel",    "pack": 200,  "unit": "g" },
+  "bakpoeder":     { "name": "Proszek do pieczenia", "query": "dr oetker bakpoeder", "pack": 70,   "unit": "g" },
+
+  "barwnik":       { "name": "Barwnik czerwony", "manual": true, "pack": 20, "unit": "g",  "price": 219 },
+  "wanilia":       { "name": "Ekstrakt waniliowy","manual": true,"pack": 50, "unit": "ml", "price": 349 }
+}

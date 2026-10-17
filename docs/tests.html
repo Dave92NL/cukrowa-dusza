@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tortownik — testy</title>
+<style>
+  :root{--bg:#F2F2F7;--card:#fff;--ink:#1C1C1E;--dim:#6E6E78;--ok:#1D9D4E;--bad:#D92B45;--sep:rgba(60,60,67,.13)}
+  @media(prefers-color-scheme:dark){:root{--bg:#000;--card:#1C1C1E;--ink:#F3F3F6;--dim:#9B9BA3;--ok:#3EDC72;--bad:#FF566F;--sep:rgba(84,84,88,.42)}}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,BlinkMacSystemFont,system-ui,sans-serif;padding:28px 18px 60px}
+  .wrap{max-width:760px;margin:0 auto}
+  h1{font-size:26px;letter-spacing:-.02em;margin:0 0 4px}
+  .lede{color:var(--dim);margin:0 0 20px;font-size:14px}
+  #sum{background:var(--card);border-radius:14px;padding:16px 18px;margin-bottom:18px;font-variant-numeric:tabular-nums}
+  #sum b{font-size:22px;letter-spacing:-.02em}
+  .grp{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--dim);padding:18px 4px 7px}
+  .list{background:var(--card);border-radius:14px;overflow:hidden}
+  .t{display:flex;gap:11px;padding:10px 14px;border-top:.5px solid var(--sep);align-items:baseline}
+  .t:first-child{border-top:0}
+  .m{flex:0 0 auto;font-weight:700;font-size:12px;width:40px}
+  .m.p{color:var(--ok)} .m.f{color:var(--bad)}
+  .n{flex:1 1 auto;min-width:0}
+  .d{color:var(--bad);font-size:12.5px;font-family:ui-monospace,Menlo,monospace;margin-top:3px;word-break:break-all}
+  .hint{background:var(--card);border-left:3px solid var(--bad);border-radius:10px;padding:13px 15px;margin-top:20px;font-size:13.5px;color:var(--dim)}
+  code{font-family:ui-monospace,Menlo,monospace;font-size:12.5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Tortownik — testy silnika</h1>
+  <p class="lede">Sprawdza <code>calc.js</code> i <code>money.js</code> na recepturze wzorcowej. Zero narzędzi — wystarczy ta strona.</p>
+  <div id="sum">uruchamiam…</div>
+  <div id="out"></div>
+  <div class="hint">
+    Strona musi być podana po HTTP, bo moduły ES nie działają z <code>file://</code>.<br>
+    W katalogu projektu: <code>python3 tools/serve.py</code> → <code>localhost:8765/tests.html</code>
+  </div>
+</div>
+
+<script type="module">
+import { fmt, fmtPlain, parseMoney, parseAmount } from './js/money.js';
+import { cakeCost, unitPrice, lineCost, bonusActive, resolveProduct,
+         diameterFactor, scaleRecipe, pricesAgeDays } from './js/calc.js';
+
+const out = document.getElementById('out');
+let pass = 0, fail = 0, group = null;
+
+function grp(name){ group = document.createElement('div');
+  const h = document.createElement('div'); h.className='grp'; h.textContent=name;
+  const l = document.createElement('div'); l.className='list';
+  out.append(h, l); group = l; }
+
+function t(name, fn){
+  let okFlag = true, detail = '';
+  try { fn(); } catch(e){ okFlag = false; detail = e.message; }
+  okFlag ? pass++ : fail++;
+  const row = document.createElement('div'); row.className = 't';
+  row.innerHTML = `<span class="m ${okFlag?'p':'f'}">${okFlag?'OK':'BŁĄD'}</span>
+    <span class="n">${name}${detail?`<div class="d">${detail}</div>`:''}</span>`;
+  group.appendChild(row);
+}
+const near = (a, b, tol=0.005) => {
+  if (a == null || !Number.isFinite(a)) throw new Error(`oczekiwano ~${b}, dostano ${a}`);
+  if (Math.abs(a-b) > tol) throw new Error(`oczekiwano ~${b}, dostano ${a} (różnica ${(a-b).toFixed(4)})`);
+};
+// Porownanie gleboke — inaczej tablice porownywalyby sie po referencji.
+const eq = (a, b) => {
+  const sa = JSON.stringify(a), sb = JSON.stringify(b);
+  if (sa !== sb) throw new Error(`oczekiwano ${sb}, dostano ${sa}`);
+};
+const isNull = a => { if (a !== null) throw new Error(`oczekiwano null, dostano ${JSON.stringify(a)}`); };
+
+const [catalog, prices] = await Promise.all([
+  fetch('./data/catalog.json').then(r => r.json()),
+  fetch('./data/prices.json').then(r => r.json()),
+]);
+
+const RECIPE = { name:'Red Velvet', diameter:22, slices:12, hours:2.5, overhead:305,
+  lines:[{key:'maslo',amount:180},{key:'cukier',amount:300},{key:'maka',amount:320},
+         {key:'jajka',amount:4},{key:'maslanka',amount:240},{key:'kakao',amount:25},
+         {key:'mascarpone',amount:500},{key:'smietana',amount:200},
+         {key:'cukier_puder',amount:120},{key:'barwnik',amount:8}] };
+const SETTINGS = { hourlyRate:1200, marginPct:0.35, marginAlert:0.20 };
+const DAY = new Date('2026-10-17T12:00:00Z');       // Bonus jeszcze aktywny
+const opt = (useBonus) => ({ useBonus, today: DAY });
+
+// ───────── cena jednostkowa
+grp('Cena za jednostkę');
+const maslo = resolveProduct('maslo', catalog, prices);
+t('masło bez Bonusa: 279 gr / 250 g = 1,116 gr/g', () => near(unitPrice(maslo, opt(false)), 1.116));
+t('masło z Bonusem: 223 gr / 250 g = 0,892 gr/g',  () => near(unitPrice(maslo, opt(true)),  0.892));
+t('jajka liczone na sztuki: 299 / 10 = 29,9 gr/szt',
+  () => near(unitPrice(resolveProduct('jajka', catalog, prices), opt(true)), 29.9));
+t('mąka: 119 gr / 1000 g = 0,119 gr/g',
+  () => near(unitPrice(resolveProduct('maka', catalog, prices), opt(true)), 0.119));
+t('pack = 0 daje null, nie Infinity',
+  () => isNull(unitPrice({ pack:0, price:279 }, opt(true))));
+t('brak ceny daje null, nie zero',
+  () => isNull(unitPrice({ pack:250, price:null }, opt(true))));
+
+// ───────── Bonus
+grp('Promocje Bonus');
+t('Bonus aktywny przed datą końca',
+  () => eq(bonusActive({bonusPrice:223, bonusUntil:'2026-10-19'}, DAY), true));
+t('Bonus WYGASŁY nie jest stosowany — używamy ceny podstawowej', () => {
+  const stary = { pack:250, price:279, bonusPrice:223, bonusUntil:'2026-10-10' };
+  eq(bonusActive(stary, DAY), false);
+  near(unitPrice(stary, opt(true)), 1.116);
+});
+t('produkt bez Bonusa: bonusActive = false',
+  () => eq(bonusActive({ bonusPrice:null }, DAY), false));
+
+// ───────── koszt pozycji
+grp('Koszt pozycji');
+t('masło 180 g bez Bonusa = 200,88 gr', () => near(lineCost(180, maslo, opt(false)), 200.88));
+t('masło 180 g z Bonusem = 160,56 gr',   () => near(lineCost(180, maslo, opt(true)),  160.56));
+t('mascarpone 500 g z Bonusem = 328,00 gr',
+  () => near(lineCost(500, resolveProduct('mascarpone', catalog, prices), opt(true)), 328));
+t('ujemna gramatura daje null', () => isNull(lineCost(-5, maslo, opt(true))));
+
+// ───────── pełna kalkulacja
+grp('Kalkulacja Red Velvet (Ø22, 12 porcji, 2,5 godz × € 12)');
+const bez = cakeCost(RECIPE, catalog, prices, SETTINGS, opt(false));
+const zB  = cakeCost(RECIPE, catalog, prices, SETTINGS, opt(true));
+t('składniki bez Bonusa = 1127,92 gr (€ 11,28)', () => near(bez.ingredients, 1127.92, 0.01));
+t('składniki z Bonusem = 977,60 gr (€ 9,78)',    () => near(zB.ingredients,  977.60, 0.01));
+t('oszczędność na Bonusie = 150,32 gr (€ 1,50)', () => near(zB.bonusSavings, 150.32, 0.01));
+t('robocizna = 2,5 × 1200 = 3000 gr',            () => near(zB.labour, 3000));
+t('koszt własny = 977,60 + 3000 + 305 = 4282,60 gr (€ 42,83)',
+  () => near(zB.total, 4282.60, 0.01));
+t('koszt porcji = 4282,60 / 12 = 356,88 gr (€ 3,57)', () => near(zB.perSlice, 356.8833, 0.01));
+t('cena przy marży 35% = 5781,51 gr (€ 57,82)',       () => near(zB.suggestedPrice, 5781.51, 0.02));
+t('suma liczona na nieokrąglonych pozycjach, nie na zaokrąglonych', () => {
+  const zaokr = zB.lines.reduce((s,l) => s + Math.round(l.cost), 0);
+  if (Math.round(zB.ingredients) === zaokr)
+    throw new Error('test nie odróżnia metod — popraw dane wzorcowe');
+  near(zB.ingredients, 977.60, 0.01);
+});
+t('wszystkie 10 pozycji policzonych, nic nie brakuje', () => {
+  eq(zB.lines.length, 10); eq(zB.missing.length, 0); eq(zB.stale.length, 0);
+});
+t('produkt ręczny (barwnik) bierze cenę z katalogu: 10,95 gr/g', () => {
+  const l = zB.lines.find(x => x.key === 'barwnik');
+  eq(l.source, 'manual'); near(l.unitPrice, 10.95); near(l.cost, 87.6);
+});
+
+// ───────── bezpieczeństwo: brakująca cena
+grp('Bezpieczeństwo — brak ceny NIE może dać zera');
+const dziura = { ...RECIPE, lines:[...RECIPE.lines, { key:'pistacje', amount:150 }] };
+const zDziura = cakeCost(dziura, catalog, prices, SETTINGS, opt(true));
+t('nieznany składnik ląduje w "missing"', () => eq(zDziura.missing, ['pistacje']));
+t('nieznany składnik ma cost = null, nie 0',
+  () => isNull(zDziura.lines.find(l => l.key === 'pistacje').cost));
+t('kalkulacja nie milczy — koszt zostaje bez brakującej pozycji', () => {
+  near(zDziura.ingredients, zB.ingredients, 0.01);
+  if (zDziura.missing.length === 0) throw new Error('brak ostrzeżenia o brakującym składniku');
+});
+t('produkt z ok:false trafia do "stale" i nie udaje aktualnego', () => {
+  const p = JSON.parse(JSON.stringify(prices));
+  p.products.maslo.ok = false;
+  const r = cakeCost(RECIPE, catalog, p, SETTINGS, opt(true));
+  eq(r.stale, ['maslo']);
+});
+
+// ───────── marża
+grp('Marża');
+t('marża z ręcznie ustawionej ceny € 60,00 ≈ 40,1%', () => {
+  const r = cakeCost({ ...RECIPE, price:6000 }, catalog, prices, SETTINGS, opt(true));
+  near(r.actualMargin, (6000-4282.6)/4282.6, 0.0001); eq(r.marginLow, false);
+});
+t('cena € 45,00 daje marżę pod progiem 20% → alarm', () => {
+  const r = cakeCost({ ...RECIPE, price:4500 }, catalog, prices, SETTINGS, opt(true));
+  eq(r.marginLow, true);
+});
+
+// ───────── skalowanie średnicy
+grp('Skalowanie średnicy');
+t('Ø22 → Ø24 to ×1,190083 (powierzchnia), nie ×1,09', () => {
+  near(diameterFactor(22, 24), 1.190083, 0.000001);
+  if (Math.abs(diameterFactor(22,24) - 24/22) < 0.01)
+    throw new Error('skalowanie liczy średnicę zamiast powierzchni');
+});
+t('Ø22 → Ø22 to ×1', () => near(diameterFactor(22, 22), 1));
+t('scaleRecipe przelicza gramatury: masło 180 → 214,2 g', () => {
+  const s = scaleRecipe(RECIPE, 24);
+  near(s.lines.find(l => l.key==='maslo').amount, 214.2, 0.05);
+  eq(s.diameter, 24); eq(s.slices, 14);
+});
+
+// ───────── pieniądze
+grp('Formatowanie i parsowanie');
+t('fmt(4283) = "€ 42,83"',      () => eq(fmt(4282.6), '€ 42,83'));
+t('fmt(0) = "€ 0,00"',           () => eq(fmt(0), '€ 0,00'));
+t('fmtPlain(279) = "2,79"',      () => eq(fmtPlain(279), '2,79'));
+t('parseMoney("2,79") = 279',    () => eq(parseMoney('2,79'), 279));
+t('parseMoney("€ 2.79") = 279',  () => eq(parseMoney('€ 2.79'), 279));
+t('parseMoney("") = null',       () => isNull(parseMoney('')));
+t('parseMoney("abc") = null',    () => isNull(parseMoney('abc')));
+t('parseAmount("1,5") = 1.5',    () => eq(parseAmount('1,5'), 1.5));
+t('parseAmount("-5") = null (ujemne odrzucone)', () => isNull(parseAmount('-5')));
+
+// ───────── świeżość cen
+grp('Świeżość cen');
+t('wiek pliku z cenami liczony w dniach', () => {
+  near(pricesAgeDays({ syncedAt:'2026-10-15T12:00:00Z' }, DAY), 2, 0.01);
+});
+t('brak syncedAt daje null', () => isNull(pricesAgeDays({ syncedAt:null }, DAY)));
+t('seed prices.json nie udaje zsynchronizowanego', () => {
+  eq(prices.seed, true); isNull(pricesAgeDays(prices, DAY));
+});
+
+// ───────── spójność danych
+grp('Spójność katalogu i cen');
+t('każdy nie-ręczny składnik ma cenę', () => {
+  const brak = Object.keys(catalog).filter(k =>
+    !k.startsWith('_') && !catalog[k].manual && !prices.products[k]);
+  eq(brak, []);
+});
+t('każda cena ma wpis w katalogu', () => {
+  const sierotki = Object.keys(prices.products).filter(k => !catalog[k]);
+  eq(sierotki, []);
+});
+t('wszystkie jednostki to g / ml / szt', () => {
+  const zle = Object.entries(catalog).filter(([k,v]) =>
+    !k.startsWith('_') && !['g','ml','szt'].includes(v.unit)).map(([k]) => k);
+  eq(zle, []);
+});
+
+const sum = document.getElementById('sum');
+sum.innerHTML = fail === 0
+  ? `<b style="color:var(--ok)">${pass} / ${pass} przeszło</b><div style="color:var(--dim);font-size:13px;margin-top:3px">Silnik kalkulacji działa poprawnie.</div>`
+  : `<b style="color:var(--bad)">${fail} z ${pass+fail} nie przeszło</b><div style="color:var(--dim);font-size:13px;margin-top:3px">Szczegóły poniżej.</div>`;
+document.title = fail === 0 ? `✓ ${pass} testów — Tortownik` : `✗ ${fail} błędów — Tortownik`;
+</script>
+</body>
+</html>

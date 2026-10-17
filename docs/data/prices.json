@@ -1,0 +1,21 @@
+{
+  "seed": true,
+  "syncedAt": null,
+  "source": "seed",
+  "note": "Ceny przykladowe, zeby aplikacja dzialala przed pierwsza synchronizacja. Nadpisze je tools/sync_prices.py.",
+  "products": {
+    "maslo":        { "title": "AH Roomboter ongezouten", "price": 279, "bonusPrice": 223, "bonusUntil": "2026-10-19", "bonusLabel": "Bonus −20%", "ok": true },
+    "cukier":       { "title": "AH Kristalsuiker",         "price": 129, "bonusPrice": null, "ok": true },
+    "maka":         { "title": "AH Patentbloem",           "price": 119, "bonusPrice": null, "ok": true },
+    "jajka":        { "title": "AH Eieren vrije uitloop M","price": 299, "bonusPrice": null, "ok": true },
+    "maslanka":     { "title": "AH Karnemelk",             "price": 115, "bonusPrice": null, "ok": true },
+    "kakao":        { "title": "AH Cacaopoeder",           "price": 249, "bonusPrice": null, "ok": true },
+    "mascarpone":   { "title": "AH Mascarpone",            "price": 219, "bonusPrice": 164, "bonusUntil": "2026-10-19", "bonusLabel": "Bonus −25%", "ok": true },
+    "smietana":     { "title": "AH Slagroom 35%",          "price": 149, "bonusPrice": null, "ok": true },
+    "cukier_puder": { "title": "AH Poedersuiker",          "price": 139, "bonusPrice": null, "ok": true },
+    "mleko":        { "title": "AH Volle melk",            "price": 119, "bonusPrice": null, "ok": true },
+    "czekolada":    { "title": "AH Pure chocolade 72%",    "price": 189, "bonusPrice": null, "ok": true },
+    "serek":        { "title": "Philadelphia naturel",     "price": 249, "bonusPrice": null, "ok": true },
+    "bakpoeder":    { "title": "Dr. Oetker Bakpoeder",     "price": 85,  "bonusPrice": null, "ok": true }
+  }
+}
