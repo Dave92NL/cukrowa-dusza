@@ -174,8 +174,8 @@ export function renderSync(prices, error, list) {
   }
   if (nigdy) {
     dot.classList.add('warn');
-    title.textContent = `${ile(nigdy, 'cena', 'ceny', 'cen')} nigdy nie pobrano`;
-    sub.textContent = 'Reszta jest aktualna. Brakujące mają wciąż wartości przykładowe.';
+    title.textContent = `${ile(nigdy, 'cena', 'ceny', 'cen')} do pobrania`;
+    sub.textContent = 'Reszta aktualna. Te mają jeszcze wartości przykładowe.';
     return;
   }
   const age = pricesAgeDays(prices);

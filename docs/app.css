@@ -180,8 +180,12 @@ main{max-width:var(--kolumna);margin-inline:auto;
 .toggle[aria-pressed="true"]::after{transform:translateX(20px)}
 
 /* ───────── baner synchronizacji ───────── */
-.sync{display:flex;align-items:center;gap:11px;background:var(--card);border-radius:16px;padding:13px 14px}
-.sync .dot{flex:0 0 auto;width:9px;height:9px;border-radius:50%;background:var(--good);box-shadow:0 0 0 4px var(--good-soft)}
+/* align-items:flex-start, bo tytul potrafi sie zawinac na waskim ekranie -
+   przy center kropka ladowala w polowie dwuwierszowego tekstu. */
+.sync{display:flex;align-items:flex-start;gap:11px;background:var(--card);
+  border-radius:16px;padding:13px 14px}
+.sync .dot{flex:0 0 auto;width:9px;height:9px;border-radius:50%;margin-top:7px;
+  background:var(--good);box-shadow:0 0 0 4px var(--good-soft)}
 .sync .dot.warn{background:var(--warn);box-shadow:0 0 0 4px var(--warn-soft)}
 .sync .dot.bad{background:var(--bonus);box-shadow:0 0 0 4px var(--bonus-soft)}
 .sync .main{flex:1 1 auto;min-width:0}
