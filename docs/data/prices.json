@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-10-17T12:49:23Z",
+  "syncedAt": "2026-10-18T09:32:01Z",
   "sources": {
     "ah": "apify/studio-amba~albert-heijn-scraper",
     "baktotaal": "https://www.baktotaal.nl"
@@ -27,7 +27,7 @@
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-10-17T12:49:23Z"
+      "syncedAt": "2026-10-18T09:32:01Z"
     },
     "barwnik_czarny": {
       "title": "RD Kleurstof ProGel 25 gram",
@@ -43,7 +43,7 @@
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-10-17T12:49:23Z"
+      "syncedAt": "2026-10-18T09:32:01Z"
     },
     "cukier": {
       "title": "AH Kristalsuiker",
@@ -107,7 +107,7 @@
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-10-17T12:49:23Z"
+      "syncedAt": "2026-10-18T09:32:01Z"
     },
     "mascarpone": {
       "title": "AH Mascarpone",
@@ -159,7 +159,7 @@
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-10-17T12:49:23Z"
+      "syncedAt": "2026-10-18T09:32:01Z"
     },
     "podklad_22": {
       "title": "Cakeboard Zilver Rond",
@@ -175,7 +175,7 @@
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-10-17T12:49:23Z"
+      "syncedAt": "2026-10-18T09:32:01Z"
     },
     "podklad_25": {
       "title": "Cakeboard Zilver Rond",
@@ -191,7 +191,7 @@
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-10-17T12:49:23Z"
+      "syncedAt": "2026-10-18T09:32:01Z"
     },
     "posypka": {
       "title": "Sprinkles World of Magic 90g",
@@ -207,7 +207,7 @@
       "inStock": true,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-10-17T12:49:23Z"
+      "syncedAt": "2026-10-18T09:32:01Z"
     },
     "pudelko_25": {
       "title": "PME Taartdoos",
@@ -223,7 +223,7 @@
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-10-17T12:49:23Z"
+      "syncedAt": "2026-10-18T09:32:01Z"
     },
     "rekawy": {
       "title": "Wilton Wegwerp Spuitzakken 12 stuks",
@@ -239,7 +239,7 @@
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-10-17T12:49:23Z"
+      "syncedAt": "2026-10-18T09:32:01Z"
     },
     "serek": {
       "title": "Philadelphia naturel",
