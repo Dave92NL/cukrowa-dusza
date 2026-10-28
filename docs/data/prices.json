@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-10-27T10:29:59Z",
+  "syncedAt": "2026-10-28T11:18:14Z",
   "sources": {
     "ah": "apify/studio-amba~albert-heijn-scraper",
     "baktotaal": "https://www.baktotaal.nl"
@@ -16,8 +16,8 @@
     "barwnik": {
       "title": "RD Kleurstof ProGel 25 gram",
       "price": 419,
-      "netPrice": 384,
-      "vatRate": 1.09,
+      "netPrice": null,
+      "vatRate": null,
       "bonusPrice": null,
       "bonusLabel": null,
       "bonusUntil": null,
@@ -27,13 +27,13 @@
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-10-27T10:29:59Z"
+      "syncedAt": "2026-10-28T11:18:14Z"
     },
     "barwnik_czarny": {
       "title": "RD Kleurstof ProGel 25 gram",
       "price": 419,
-      "netPrice": 384,
-      "vatRate": 1.09,
+      "netPrice": null,
+      "vatRate": null,
       "bonusPrice": null,
       "bonusLabel": null,
       "bonusUntil": null,
@@ -43,7 +43,7 @@
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-10-27T10:29:59Z"
+      "syncedAt": "2026-10-28T11:18:14Z"
     },
     "cukier": {
       "title": "AH Kristalsuiker",
@@ -96,8 +96,8 @@
     "masa_cukrowa": {
       "title": "BrandNewCake Fondant Glazuur Wit",
       "price": 1398,
-      "netPrice": 1283,
-      "vatRate": 1.09,
+      "netPrice": null,
+      "vatRate": null,
       "bonusPrice": null,
       "bonusLabel": null,
       "bonusUntil": null,
@@ -107,7 +107,7 @@
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-10-27T10:29:59Z"
+      "syncedAt": "2026-10-28T11:18:14Z"
     },
     "mascarpone": {
       "title": "AH Mascarpone",
@@ -148,8 +148,8 @@
     "podklad_20": {
       "title": "Cakeboard Zilver Rond",
       "price": 159,
-      "netPrice": 131,
-      "vatRate": 1.21,
+      "netPrice": null,
+      "vatRate": null,
       "bonusPrice": null,
       "bonusLabel": null,
       "bonusUntil": null,
@@ -159,29 +159,29 @@
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-10-27T10:29:59Z"
+      "syncedAt": "2026-10-28T11:18:14Z"
     },
     "podklad_22": {
       "title": "Cakeboard Zilver Rond",
       "price": 179,
-      "netPrice": 164,
-      "vatRate": 1.09,
+      "netPrice": null,
+      "vatRate": null,
       "bonusPrice": null,
       "bonusLabel": null,
       "bonusUntil": null,
-      "sku": "CC109",
+      "sku": "CC107",
       "ean": null,
       "url": "https://www.baktotaal.nl/cakeboard-zilver-rond-o22cm",
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-10-27T10:29:59Z"
+      "syncedAt": "2026-10-28T11:18:14Z"
     },
     "podklad_25": {
       "title": "Cakeboard Zilver Rond",
       "price": 198,
-      "netPrice": 181,
-      "vatRate": 1.09,
+      "netPrice": null,
+      "vatRate": null,
       "bonusPrice": null,
       "bonusLabel": null,
       "bonusUntil": null,
@@ -191,7 +191,7 @@
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-10-27T10:29:59Z"
+      "syncedAt": "2026-10-28T11:18:14Z"
     },
     "posypka": {
       "title": "Sprinkles World of Magic 90g",
@@ -207,13 +207,13 @@
       "inStock": true,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-10-27T10:29:59Z"
+      "syncedAt": "2026-10-28T11:18:14Z"
     },
     "pudelko_25": {
       "title": "PME Taartdoos",
       "price": 399,
-      "netPrice": 330,
-      "vatRate": 1.21,
+      "netPrice": null,
+      "vatRate": null,
       "bonusPrice": null,
       "bonusLabel": null,
       "bonusUntil": null,
@@ -223,13 +223,13 @@
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-10-27T10:29:59Z"
+      "syncedAt": "2026-10-28T11:18:14Z"
     },
     "rekawy": {
       "title": "Wilton Wegwerp Spuitzakken 12 stuks",
       "price": 599,
-      "netPrice": 495,
-      "vatRate": 1.21,
+      "netPrice": null,
+      "vatRate": null,
       "bonusPrice": null,
       "bonusLabel": null,
       "bonusUntil": null,
@@ -239,7 +239,7 @@
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-10-27T10:29:59Z"
+      "syncedAt": "2026-10-28T11:18:14Z"
     },
     "serek": {
       "title": "Philadelphia naturel",
