@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-11-08T11:53:54Z",
+  "syncedAt": "2026-11-09T13:50:34Z",
   "sources": {
     "ah": "apify/studio-amba~albert-heijn-scraper",
     "baktotaal": "https://www.baktotaal.nl"
@@ -27,7 +27,7 @@
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-11-08T11:53:54Z"
+      "syncedAt": "2026-11-09T13:50:34Z"
     },
     "barwnik_czarny": {
       "title": "RD Kleurstof ProGel 25 gram",
@@ -43,7 +43,7 @@
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-11-08T11:53:54Z"
+      "syncedAt": "2026-11-09T13:50:34Z"
     },
     "cukier": {
       "title": "AH Kristalsuiker",
@@ -107,7 +107,7 @@
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-11-08T11:53:54Z"
+      "syncedAt": "2026-11-09T13:50:34Z"
     },
     "mascarpone": {
       "title": "AH Mascarpone",
@@ -159,11 +159,11 @@
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-11-08T11:53:54Z"
+      "syncedAt": "2026-11-09T13:50:34Z"
     },
     "podklad_22": {
       "title": "Cakeboard Zilver Rond",
-      "price": 198,
+      "price": 189,
       "netPrice": null,
       "vatRate": null,
       "bonusPrice": null,
@@ -175,7 +175,7 @@
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-11-08T11:53:54Z"
+      "syncedAt": "2026-11-09T13:50:34Z"
     },
     "podklad_25": {
       "title": "Cakeboard Zilver Rond",
@@ -185,13 +185,13 @@
       "bonusPrice": null,
       "bonusLabel": null,
       "bonusUntil": null,
-      "sku": "CC109",
+      "sku": "CC1010",
       "ean": null,
       "url": "https://www.baktotaal.nl/cakeboard-zilver-rond-o25cm",
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-11-08T11:53:54Z"
+      "syncedAt": "2026-11-09T13:50:34Z"
     },
     "posypka": {
       "title": "Sprinkles World of Magic 90g",
@@ -207,7 +207,7 @@
       "inStock": true,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-11-08T11:53:54Z"
+      "syncedAt": "2026-11-09T13:50:34Z"
     },
     "pudelko_25": {
       "title": "PME Taartdoos",
@@ -223,7 +223,7 @@
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-11-08T11:53:54Z"
+      "syncedAt": "2026-11-09T13:50:34Z"
     },
     "rekawy": {
       "title": "Wilton Wegwerp Spuitzakken 12 stuks",
