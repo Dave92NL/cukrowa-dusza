@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-11-16T13:34:54Z",
+  "syncedAt": "2026-11-17T14:19:58Z",
   "sources": {
     "ah": "apify/studio-amba~albert-heijn-scraper",
     "baktotaal": "https://www.baktotaal.nl"
@@ -10,7 +10,7 @@
       "price": 85,
       "bonusPrice": null,
       "ok": false,
-      "warning": "Apify HTTP 402: Your remaining usage of $4.439994 this billing cycle isn't enough for this run. Increase your limit by upgrading to a paid plan at https://console.apify.com/billing/subscription",
+      "warning": "opakowanie w AH to 80 g, w katalogu 70 g - popraw 'pack'",
       "stale": true
     },
     "barwnik": {
@@ -27,7 +27,7 @@
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-11-16T13:34:54Z"
+      "syncedAt": "2026-11-17T14:19:58Z"
     },
     "barwnik_czarny": {
       "title": "RD Kleurstof ProGel 25 gram",
@@ -43,14 +43,14 @@
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-11-16T13:34:54Z"
+      "syncedAt": "2026-11-17T14:19:58Z"
     },
     "cukier": {
       "title": "AH Kristalsuiker",
       "price": 129,
       "bonusPrice": null,
       "ok": false,
-      "warning": "Apify HTTP 402: Your remaining usage of $4.439994 this billing cycle isn't enough for this run. Increase your limit by upgrading to a paid plan at https://console.apify.com/billing/subscription",
+      "warning": "opakowanie w AH to 750 g, w katalogu 1000 g - popraw 'pack'",
       "stale": true
     },
     "cukier_puder": {
@@ -58,7 +58,7 @@
       "price": 139,
       "bonusPrice": null,
       "ok": false,
-      "warning": "Apify HTTP 402: Your remaining usage of $4.439994 this billing cycle isn't enough for this run. Increase your limit by upgrading to a paid plan at https://console.apify.com/billing/subscription",
+      "warning": "opakowanie w AH to 260 g, w katalogu 500 g - popraw 'pack'",
       "stale": true
     },
     "czekolada": {
@@ -66,7 +66,7 @@
       "price": 189,
       "bonusPrice": null,
       "ok": false,
-      "warning": "Apify HTTP 402: Your remaining usage of $4.439994 this billing cycle isn't enough for this run. Increase your limit by upgrading to a paid plan at https://console.apify.com/billing/subscription",
+      "warning": "dopasowanie tylko po nazwie - potwierdz produkt",
       "stale": true
     },
     "jajka": {
@@ -74,7 +74,7 @@
       "price": 299,
       "bonusPrice": null,
       "ok": false,
-      "warning": "Apify HTTP 402: Your remaining usage of $4.439994 this billing cycle isn't enough for this run. Increase your limit by upgrading to a paid plan at https://console.apify.com/billing/subscription",
+      "warning": "opakowanie w AH to 6 szt, w katalogu 10 szt - popraw 'pack'",
       "stale": true
     },
     "kakao": {
@@ -82,7 +82,7 @@
       "price": 249,
       "bonusPrice": null,
       "ok": false,
-      "warning": "Apify HTTP 402: Your remaining usage of $4.439994 this billing cycle isn't enough for this run. Increase your limit by upgrading to a paid plan at https://console.apify.com/billing/subscription",
+      "warning": "opakowanie w AH to 400 g, w katalogu 250 g - popraw 'pack'",
       "stale": true
     },
     "maka": {
@@ -90,7 +90,7 @@
       "price": 119,
       "bonusPrice": null,
       "ok": false,
-      "warning": "Apify HTTP 402: Your remaining usage of $4.439994 this billing cycle isn't enough for this run. Increase your limit by upgrading to a paid plan at https://console.apify.com/billing/subscription",
+      "warning": "dopasowanie tylko po nazwie - potwierdz produkt",
       "stale": true
     },
     "masa_cukrowa": {
@@ -107,7 +107,7 @@
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-11-16T13:34:54Z"
+      "syncedAt": "2026-11-17T14:19:58Z"
     },
     "mascarpone": {
       "title": "AH Mascarpone",
@@ -116,7 +116,7 @@
       "bonusUntil": "2026-10-19",
       "bonusLabel": "Bonus −25%",
       "ok": false,
-      "warning": "Apify HTTP 402: Your remaining usage of $4.439994 this billing cycle isn't enough for this run. Increase your limit by upgrading to a paid plan at https://console.apify.com/billing/subscription",
+      "warning": "dopasowanie tylko po nazwie - potwierdz produkt",
       "stale": true
     },
     "maslanka": {
@@ -124,7 +124,7 @@
       "price": 115,
       "bonusPrice": null,
       "ok": false,
-      "warning": "Apify HTTP 402: Your remaining usage of $4.439994 this billing cycle isn't enough for this run. Increase your limit by upgrading to a paid plan at https://console.apify.com/billing/subscription",
+      "warning": "dopasowanie tylko po nazwie - potwierdz produkt",
       "stale": true
     },
     "maslo": {
@@ -134,7 +134,7 @@
       "bonusUntil": "2026-10-19",
       "bonusLabel": "Bonus −20%",
       "ok": false,
-      "warning": "Apify HTTP 402: Your remaining usage of $4.439994 this billing cycle isn't enough for this run. Increase your limit by upgrading to a paid plan at https://console.apify.com/billing/subscription",
+      "warning": "dopasowanie tylko po nazwie - potwierdz produkt",
       "stale": true
     },
     "mleko": {
@@ -142,7 +142,7 @@
       "price": 119,
       "bonusPrice": null,
       "ok": false,
-      "warning": "Apify HTTP 402: Your remaining usage of $4.439994 this billing cycle isn't enough for this run. Increase your limit by upgrading to a paid plan at https://console.apify.com/billing/subscription",
+      "warning": "dopasowanie tylko po nazwie - potwierdz produkt",
       "stale": true
     },
     "podklad_20": {
@@ -159,7 +159,7 @@
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-11-16T13:34:54Z"
+      "syncedAt": "2026-11-17T14:19:58Z"
     },
     "podklad_22": {
       "title": "Cakeboard Zilver Rond",
@@ -175,7 +175,7 @@
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-11-16T13:34:54Z"
+      "syncedAt": "2026-11-17T14:19:58Z"
     },
     "podklad_25": {
       "title": "Cakeboard Zilver Rond",
@@ -191,7 +191,7 @@
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-11-16T13:34:54Z"
+      "syncedAt": "2026-11-17T14:19:58Z"
     },
     "posypka": {
       "title": "Sprinkles World of Magic 90g",
@@ -207,7 +207,7 @@
       "inStock": true,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-11-16T13:34:54Z"
+      "syncedAt": "2026-11-17T14:19:58Z"
     },
     "pudelko_25": {
       "title": "PME Taartdoos",
@@ -223,7 +223,7 @@
       "inStock": null,
       "source": "baktotaal",
       "ok": true,
-      "syncedAt": "2026-11-16T13:34:54Z"
+      "syncedAt": "2026-11-17T14:19:58Z"
     },
     "rekawy": {
       "title": "Wilton Wegwerp Spuitzakken 12 stuks",
@@ -248,7 +248,7 @@
       "price": 249,
       "bonusPrice": null,
       "ok": false,
-      "warning": "Apify HTTP 402: Your remaining usage of $4.439994 this billing cycle isn't enough for this run. Increase your limit by upgrading to a paid plan at https://console.apify.com/billing/subscription",
+      "warning": "dopasowanie tylko po nazwie - potwierdz produkt",
       "stale": true
     },
     "smietana": {
@@ -256,7 +256,7 @@
       "price": 149,
       "bonusPrice": null,
       "ok": false,
-      "warning": "Apify HTTP 402: Your remaining usage of $4.439994 this billing cycle isn't enough for this run. Increase your limit by upgrading to a paid plan at https://console.apify.com/billing/subscription",
+      "warning": "dopasowanie tylko po nazwie - potwierdz produkt",
       "stale": true
     }
   }
